@@ -21,13 +21,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock users for demo
-const mockUsers: User[] = [
-  { id: '1', name: 'John Student', email: 'student@eldohub.com', role: 'student', avatar: '' },
-  { id: '2', name: 'Jane Instructor', email: 'instructor@eldohub.com', role: 'instructor', avatar: '' },
-  { id: '3', name: 'Admin User', email: 'admin@eldohub.com', role: 'admin', avatar: '' },
-];
-
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,16 +36,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
-    // Simulate API call
+    // Simulate API call - replace with actual API integration
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const foundUser = mockUsers.find(u => u.email === email);
-    if (foundUser && password === 'password') {
-      setUser(foundUser);
-      localStorage.setItem('eldohub_user', JSON.stringify(foundUser));
-    } else {
-      throw new Error('Invalid credentials');
-    }
+    // For demo purposes, create a user based on email pattern
+    // In production, this should validate against your backend
+    const role: UserRole = email.includes('admin') ? 'admin' : 
+                           email.includes('instructor') ? 'instructor' : 'student';
+    
+    const newUser: User = {
+      id: Date.now().toString(),
+      name: email.split('@')[0],
+      email,
+      role,
+    };
+    
+    setUser(newUser);
+    localStorage.setItem('eldohub_user', JSON.stringify(newUser));
     setIsLoading(false);
   };
 

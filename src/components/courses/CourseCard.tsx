@@ -30,22 +30,26 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, variant = 'default' }) 
   return (
     <div className="group bg-card rounded-xl border border-border shadow-card hover:shadow-medium transition-all duration-300 overflow-hidden">
       {/* Thumbnail */}
-      <div className="relative aspect-video overflow-hidden">
-        <img
-          src={course.thumbnail}
-          alt={course.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
+      <div className="relative aspect-video overflow-hidden bg-muted">
+        {course.thumbnail ? (
+          <img
+            src={course.thumbnail}
+            alt={course.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <PlayCircle className="w-12 h-12 text-muted-foreground" />
+          </div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-secondary/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
-        {/* Play button overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="w-14 h-14 rounded-full bg-primary/90 flex items-center justify-center shadow-glow">
             <PlayCircle className="w-8 h-8 text-primary-foreground" />
           </div>
         </div>
 
-        {/* Level badge */}
         <div className={cn(
           "absolute top-3 left-3 px-2.5 py-1 rounded-md text-xs font-semibold",
           course.level === 'Beginner' && "bg-accent text-accent-foreground",
@@ -58,22 +62,18 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, variant = 'default' }) 
 
       {/* Content */}
       <div className="p-5">
-        {/* Category */}
         <p className="text-xs font-medium text-primary uppercase tracking-wider mb-2">
           {course.category}
         </p>
 
-        {/* Title */}
         <h3 className="text-lg font-bold text-card-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
           {course.title}
         </h3>
 
-        {/* Instructor */}
         <p className="text-sm text-muted-foreground mb-4">
           by {course.instructor}
         </p>
 
-        {/* Progress bar (for enrolled courses) */}
         {isEnrolled && course.progress !== undefined && (
           <div className="mb-4">
             <div className="flex items-center justify-between text-sm mb-1.5">
@@ -84,7 +84,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, variant = 'default' }) 
           </div>
         )}
 
-        {/* Stats */}
         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
           <div className="flex items-center gap-1">
             <Clock className="w-4 h-4" />
@@ -100,7 +99,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, variant = 'default' }) 
           </div>
         </div>
 
-        {/* Action Button */}
         <Button 
           variant={isEnrolled ? "default" : "outline"} 
           className="w-full"

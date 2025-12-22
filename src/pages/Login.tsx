@@ -123,16 +123,6 @@ const Login: React.FC = () => {
             </p>
           </div>
 
-          {/* Demo credentials */}
-          <div className="mt-8 p-4 bg-muted/50 rounded-lg">
-            <p className="text-sm font-medium text-foreground mb-2">Demo Credentials:</p>
-            <div className="text-sm text-muted-foreground space-y-1">
-              <p>Student: <span className="text-foreground">student@eldohub.com</span></p>
-              <p>Instructor: <span className="text-foreground">instructor@eldohub.com</span></p>
-              <p>Admin: <span className="text-foreground">admin@eldohub.com</span></p>
-              <p>Password: <span className="text-foreground">password</span></p>
-            </div>
-          </div>
         </div>
       </div>
 

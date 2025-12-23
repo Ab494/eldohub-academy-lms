@@ -4,21 +4,13 @@ import { Eye, EyeOff, GraduationCap, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuth, UserRole } from '@/store/AuthContext';
+import { useAuth } from '@/store/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 
 const Register: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('student');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -33,7 +25,7 @@ const Register: React.FC = () => {
     try {
       const [firstName, ...lastNameParts] = name.split(' ');
       const lastName = lastNameParts.length > 0 ? lastNameParts.join(' ') : firstName;
-      await register(firstName.trim(), lastName.trim(), email.trim(), password, role);
+      await register(firstName.trim(), lastName.trim(), email.trim(), password);
       toast({
         title: 'Account created!',
         description: 'Welcome to ELDOHUB Academy.',
@@ -140,18 +132,6 @@ const Register: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="role">I want to</Label>
-              <Select value={role} onValueChange={(value: UserRole) => setRole(value)}>
-                <SelectTrigger className="h-12">
-                  <SelectValue placeholder="Select your role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="student">Learn as a Student</SelectItem>
-                  <SelectItem value="instructor">Teach as an Instructor</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
 
             <Button type="submit" variant="hero" className="w-full h-12" disabled={isSubmitting}>
               {isSubmitting ? (

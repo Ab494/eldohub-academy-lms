@@ -4,7 +4,7 @@ import { AppError } from '../utils/errorHandler.js';
 
 export class AuthService {
   static async register(userData) {
-    const { firstName, lastName, email, password, role = 'student' } = userData;
+    const { firstName, lastName, email, password } = userData;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -18,7 +18,7 @@ export class AuthService {
       lastName,
       email,
       password,
-      role,
+      role: 'student',
     });
 
     await user.save();

@@ -103,6 +103,14 @@ class APIClient {
     return this.handleResponse(response);
   }
 
+  async patch(endpoint: string, data?: any) {
+    const response = await this.request(endpoint, {
+      method: 'PATCH',
+      body: data ? JSON.stringify(data) : undefined,
+    });
+    return this.handleResponse(response);
+  }
+
   async delete(endpoint: string) {
     const response = await this.request(endpoint, { method: 'DELETE' });
     return this.handleResponse(response);
@@ -210,6 +218,15 @@ export const assignmentAPI = {
     ),
   getMySubmissions: (courseId: string, params: Record<string, any> = {}) =>
     apiClient.get(`/courses/${courseId}/assignments/my/submissions/${courseId}?${new URLSearchParams(params)}`),
+};
+
+// User endpoints (Admin only)
+export const userAPI = {
+  getAllUsers: (params: Record<string, any> = {}) => apiClient.get(`/users?${new URLSearchParams(params)}`),
+  getUserById: (userId: string) => apiClient.get(`/users/${userId}`),
+  updateUserRole: (userId: string, role: string) => apiClient.patch(`/users/${userId}/role`, { role }),
+  updateUserStatus: (userId: string, isActive: boolean) => apiClient.patch(`/users/${userId}/status`, { isActive }),
+  deleteUser: (userId: string) => apiClient.delete(`/users/${userId}`),
 };
 
 // Certificate endpoints

@@ -79,8 +79,26 @@ const CourseBuilder: React.FC = () => {
     videoUrl: '',
   });
 
-  // Empty state - no courses
-  const courses: Course[] = [];
+  // Courses state
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoadingCourses, setIsLoadingCourses] = useState(false);
+
+  React.useEffect(() => {
+    const loadCourses = async () => {
+      setIsLoadingCourses(true);
+      try {
+        const res = await (await import('@/lib/apiClient')).courseAPI.getInstructorCourses({ page: 1, limit: 50 });
+        const payload = res.data || res;
+        setCourses(payload.courses || []);
+      } catch (err) {
+        console.error('Failed to load courses for builder', err);
+      } finally {
+        setIsLoadingCourses(false);
+      }
+    };
+
+    loadCourses();
+  }, []);
 
   const toggleModuleExpand = (moduleId: string) => {
     setModules(modules.map(m =>

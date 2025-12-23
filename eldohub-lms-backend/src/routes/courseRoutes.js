@@ -7,7 +7,6 @@ const router = express.Router();
 
 // Public routes
 router.get('/', courseController.getAllCourses);
-router.get('/:courseId', courseController.getCourse);
 
 // Protected routes (Instructor)
 router.post(
@@ -18,6 +17,16 @@ router.post(
   handleValidationErrors,
   courseController.createCourse
 );
+
+// Instructor's courses - must come before /:courseId to prevent route collision
+router.get(
+  '/instructor/my-courses',
+  authenticate,
+  authorize('instructor', 'admin'),
+  courseController.getInstructorCourses
+);
+
+router.get('/:courseId', courseController.getCourse);
 
 router.put(
   '/:courseId',
@@ -38,14 +47,6 @@ router.delete(
   authenticate,
   authorize('instructor', 'admin'),
   courseController.deleteCourse
-);
-
-// Instructor's courses
-router.get(
-  '/instructor/my-courses',
-  authenticate,
-  authorize('instructor', 'admin'),
-  courseController.getInstructorCourses
 );
 
 export default router;

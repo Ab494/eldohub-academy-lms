@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   BookOpen,
@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { courseAPI } from '@/lib/apiClient';
 
 interface Course {
   _id: string;
@@ -42,15 +43,51 @@ interface Course {
 const InstructorCourseList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
-  // Empty state - no courses yet
-  const courses: Course[] = [];
+  useEffect(() => {
+    const fetchCourses = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const res = await courseAPI.getInstructorCourses({ page: 1, limit: 20 });
+        // Backend returns { courses, total, pages, currentPage }
+        const payload = res.data || res;
+        setCourses(payload.courses || []);
+      } catch (err: any) {
+        console.error('Failed to load instructor courses', err);
+        setError(err?.message || 'Failed to load courses');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
 
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || course.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  if (isLoading) {
+    return (
+      <div className="bg-card rounded-xl border border-border p-12 text-center shadow-card">
+        <div className="loader">Loading courses...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-card rounded-xl border border-border p-12 text-center shadow-card">
+        <p className="text-destructive">{error}</p>
+      </div>
+    );
+  }
 
   if (courses.length === 0) {
     return (

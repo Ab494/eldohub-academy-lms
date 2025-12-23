@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import DashboardLayout from "./components/layout/DashboardLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 import StudentDashboard from "./pages/dashboard/StudentDashboard";
 import InstructorDashboard from "./pages/dashboard/InstructorDashboard";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
@@ -41,7 +42,11 @@ const App = () => (
             </Route>
 
             {/* Instructor Dashboard */}
-            <Route path="/instructor" element={<DashboardLayout />}>
+            <Route path="/instructor" element={
+              <ProtectedRoute allowedRoles={['instructor']}>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }>
               <Route index element={<InstructorDashboard />} />
               <Route path="courses" element={<InstructorDashboard />} />
               <Route path="create" element={<InstructorDashboard />} />
@@ -50,7 +55,11 @@ const App = () => (
             </Route>
 
             {/* Admin Dashboard */}
-            <Route path="/admin" element={<DashboardLayout />}>
+            <Route path="/admin" element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }>
               <Route index element={<AdminDashboard />} />
               <Route path="users" element={<AdminDashboard />} />
               <Route path="courses" element={<AdminDashboard />} />

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  Users, 
-  BookOpen, 
-  CheckSquare, 
-  DollarSign, 
+import { Link, useLocation } from 'react-router-dom';
+import {
+  Users,
+  BookOpen,
+  CheckSquare,
+  DollarSign,
   ArrowRight,
   TrendingUp,
   AlertCircle,
@@ -12,10 +12,17 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatsCard from '@/components/dashboard/StatsCard';
+import AdminUsers from '@/components/admin/AdminUsers';
 import { useAuth } from '@/store/AuthContext';
 
 const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
+  const location = useLocation();
+
+  // Check if we're on the users page
+  if (location.pathname === '/admin/users') {
+    return <AdminUsers />;
+  }
 
   return (
     <div className="space-y-8 animate-fade-in">

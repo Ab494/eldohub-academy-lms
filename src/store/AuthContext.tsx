@@ -20,7 +20,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (firstName: string, lastName: string, email: string, password: string, role: UserRole) => Promise<void>;
+  register: (firstName: string, lastName: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => Promise<void>;
 }
@@ -71,7 +71,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const register = async (firstName: string, lastName: string, email: string, password: string, role: UserRole) => {
+  const register = async (firstName: string, lastName: string, email: string, password: string) => {
     setIsLoading(true);
     try {
       const response = await authAPI.register({
@@ -79,7 +79,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         lastName,
         email,
         password,
-        role,
       });
       if (response.success) {
         const { user: userData, accessToken, refreshToken } = response.data;

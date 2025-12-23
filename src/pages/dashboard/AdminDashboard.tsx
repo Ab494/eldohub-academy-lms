@@ -26,7 +26,7 @@ const AdminDashboard: React.FC = () => {
             Admin Dashboard
           </h1>
           <p className="text-muted-foreground mt-1">
-            Welcome back, {user?.name || 'Admin'}! Here's your platform overview.
+            Welcome back, {user?.firstName || 'Admin'}! Here's your platform overview.
           </p>
         </div>
         <div className="flex gap-2">

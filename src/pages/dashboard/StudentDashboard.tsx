@@ -22,7 +22,7 @@ const StudentDashboard: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Welcome back, {user?.name?.split(' ')[0] || 'Student'}! 👋
+            Welcome back, {user?.firstName || 'Student'}! 👋
           </h1>
           <p className="text-muted-foreground mt-1">
             Continue your learning journey where you left off

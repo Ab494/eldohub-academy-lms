@@ -36,9 +36,10 @@ class APIClient {
   }
 
   async request(endpoint: string, options: RequestOptions = {}) {
+    const optHeaders = options.headers as Record<string, string> | undefined;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...options.headers,
+      ...(optHeaders || {}),
     };
 
     const token = this.getToken();

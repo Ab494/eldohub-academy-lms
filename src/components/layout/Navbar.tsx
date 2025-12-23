@@ -65,10 +65,10 @@ const Navbar: React.FC = () => {
                   <Button variant="ghost" className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full gradient-hero flex items-center justify-center">
                       <span className="text-sm font-semibold text-primary-foreground">
-                        {user?.name?.charAt(0).toUpperCase()}
+                        {user?.firstName?.charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    <span className="font-medium">{user?.name?.split(' ')[0]}</span>
+                    <span className="font-medium">{user?.firstName}</span>
                     <ChevronDown className="w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>

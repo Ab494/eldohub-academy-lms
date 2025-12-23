@@ -22,7 +22,7 @@ const Login: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      await login(email, password);
+      await login(email.trim(), password);
       toast({
         title: 'Welcome back!',
         description: 'You have successfully logged in.',

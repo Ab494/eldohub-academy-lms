@@ -1,13 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { authAPI, apiClient } from '../lib/apiClient';
 
 export type UserRole = 'student' | 'instructor' | 'admin';
 
 export interface User {
-  id: string;
-  name: string;
+  _id: string;
+  firstName: string;
+  lastName: string;
   email: string;
   role: UserRole;
   avatar?: string;
+  phone?: string;
+  bio?: string;
+  isEmailVerified?: boolean;
 }
 
 interface AuthContextType {
@@ -15,8 +20,9 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, role: UserRole) => Promise<void>;
+  register: (firstName: string, lastName: string, email: string, password: string, role: UserRole) => Promise<void>;
   logout: () => void;
+  updateProfile: (data: Partial<User>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,58 +32,101 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored session
-    const storedUser = localStorage.getItem('eldohub_user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
+    // Check for stored session and verify token
+    const checkAuth = async () => {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        try {
+          const response = await authAPI.getCurrentUser();
+          if (response.success) {
+            setUser(response.data);
+          } else {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+          }
+        } catch (error) {
+          console.error('Auth check failed:', error);
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+        }
+      }
+      setIsLoading(false);
+    };
+
+    checkAuth();
   }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
-    // Simulate API call - replace with actual API integration
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // For demo purposes, create a user based on email pattern
-    // In production, this should validate against your backend
-    const role: UserRole = email.includes('admin') ? 'admin' : 
-                           email.includes('instructor') ? 'instructor' : 'student';
-    
-    const newUser: User = {
-      id: Date.now().toString(),
-      name: email.split('@')[0],
-      email,
-      role,
-    };
-    
-    setUser(newUser);
-    localStorage.setItem('eldohub_user', JSON.stringify(newUser));
-    setIsLoading(false);
+    try {
+      const response = await authAPI.login(email, password);
+      if (response.success) {
+        const { user: userData, accessToken, refreshToken } = response.data;
+        apiClient.setToken(accessToken);
+        apiClient.setRefreshToken(refreshToken);
+        setUser(userData);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const register = async (name: string, email: string, password: string, role: UserRole) => {
+  const register = async (firstName: string, lastName: string, email: string, password: string, role: UserRole) => {
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const newUser: User = {
-      id: Date.now().toString(),
-      name,
-      email,
-      role,
-    };
-    setUser(newUser);
-    localStorage.setItem('eldohub_user', JSON.stringify(newUser));
-    setIsLoading(false);
+    try {
+      const response = await authAPI.register({
+        firstName,
+        lastName,
+        email,
+        password,
+        role,
+      });
+      if (response.success) {
+        const { user: userData, accessToken, refreshToken } = response.data;
+        apiClient.setToken(accessToken);
+        apiClient.setRefreshToken(refreshToken);
+        setUser(userData);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('eldohub_user');
+  const logout = async () => {
+    try {
+      await authAPI.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      apiClient.clearTokens();
+      setUser(null);
+    }
+  };
+
+  const updateProfile = async (data: Partial<User>) => {
+    try {
+      const response = await authAPI.updateProfile(data);
+      if (response.success) {
+        setUser(response.data);
+      }
+    } catch (error) {
+      console.error('Profile update error:', error);
+      throw error;
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, register, logout }}>
+    <AuthContext.Provider 
+      value={{ 
+        user, 
+        isAuthenticated: !!user, 
+        isLoading, 
+        login, 
+        register, 
+        logout,
+        updateProfile
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

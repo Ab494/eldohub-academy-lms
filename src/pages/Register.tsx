@@ -31,7 +31,9 @@ const Register: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      await register(name, email, password, role);
+      const [firstName, ...lastNameParts] = name.split(' ');
+      const lastName = lastNameParts.length > 0 ? lastNameParts.join(' ') : firstName;
+      await register(firstName.trim(), lastName.trim(), email.trim(), password, role);
       toast({
         title: 'Account created!',
         description: 'Welcome to ELDOHUB Academy.',

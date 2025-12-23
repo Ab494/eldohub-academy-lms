@@ -165,11 +165,13 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, onToggle
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full gradient-hero flex items-center justify-center">
                 <span className="text-sm font-bold text-primary-foreground">
-                  {user.name.charAt(0).toUpperCase()}
+                  {user.firstName.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-sidebar-foreground truncate">{user.name}</p>
+                <p className="text-sm font-semibold text-sidebar-foreground truncate">
+                  {user.firstName} {user.lastName}
+                </p>
                 <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
               </div>
             </div>

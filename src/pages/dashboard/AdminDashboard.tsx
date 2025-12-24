@@ -67,12 +67,20 @@ const AdminDashboard: React.FC = () => {
     return <AdminAnalytics />;
   }
 
+  // Reset state when location changes
   useEffect(() => {
-    // Only fetch stats when on the main dashboard route
     if (location.pathname === '/admin') {
-      fetchDashboardStats();
+      setStats(null);
+      setLoading(true);
     }
   }, [location.pathname]);
+
+  // Fetch data when on dashboard route
+  useEffect(() => {
+    if (location.pathname === '/admin' && loading) {
+      fetchDashboardStats();
+    }
+  }, [location.pathname, loading]);
 
   const fetchDashboardStats = async () => {
     try {

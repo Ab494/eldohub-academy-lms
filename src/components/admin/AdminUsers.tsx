@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Search, UserPlus, MoreVertical, Edit, Trash2, Shield, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -46,6 +47,7 @@ interface User {
 }
 
 const AdminUsers: React.FC = () => {
+  const location = useLocation();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -58,7 +60,11 @@ const AdminUsers: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [searchTerm, selectedRole]);
+  }, [location.pathname]); // Run when route becomes active
+
+  useEffect(() => {
+    fetchUsers();
+  }, [searchTerm, selectedRole]); // Run when filters change
 
   const fetchUsers = async () => {
     try {

@@ -229,6 +229,16 @@ export const userAPI = {
   deleteUser: (userId: string) => apiClient.delete(`/users/${userId}`),
 };
 
+// Admin stats endpoints
+export const adminAPI = {
+  getUserStats: () => apiClient.get('/admin/stats/users'),
+  getCourseStats: () => apiClient.get('/admin/stats/courses'),
+  getApprovalStats: () => apiClient.get('/admin/stats/approvals'),
+  getRevenueStats: () => apiClient.get('/admin/stats/revenue'),
+  getDashboardStats: () => apiClient.get('/admin/stats/dashboard'),
+  getAllCourses: (params: Record<string, any> = {}) => apiClient.get(`/admin/courses?${new URLSearchParams(params)}`),
+};
+
 // Certificate endpoints
 export const certificateAPI = {
   generateCertificate: (enrollmentId: string) =>

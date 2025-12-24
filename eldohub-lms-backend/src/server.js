@@ -11,7 +11,7 @@ const startServer = async () => {
     app.listen(config.port, () => {
       console.log(`
 ╔════════════════════════════════════════╗
-║   🚀 Eldohub LMS Backend Running       ║
+║   Eldohub LMS Backend Running       ║
 ║   Port: ${config.port}                          ║
 ║   Environment: ${config.nodeEnv}         ║
 ║   URL: http://localhost:${config.port}          ║
@@ -19,7 +19,7 @@ const startServer = async () => {
       `);
     });
   } catch (error) {
-    console.error('❌ Failed to start server:', error);
+    console.error(' Failed to start server:', error);
     process.exit(1);
   }
 };

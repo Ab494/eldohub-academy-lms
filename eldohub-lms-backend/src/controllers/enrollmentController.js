@@ -61,3 +61,37 @@ export const getProgress = asyncHandler(async (req, res) => {
     data: enrollment,
   });
 });
+
+export const approveEnrollment = asyncHandler(async (req, res) => {
+  const { enrollmentId } = req.params;
+  const enrollment = await EnrollmentService.approveEnrollment(enrollmentId, req.userId);
+  res.status(200).json({
+    success: true,
+    message: 'Enrollment approved successfully',
+    data: enrollment,
+  });
+});
+
+export const rejectEnrollment = asyncHandler(async (req, res) => {
+  const { enrollmentId } = req.params;
+  const enrollment = await EnrollmentService.rejectEnrollment(enrollmentId, req.userId);
+  res.status(200).json({
+    success: true,
+    message: 'Enrollment rejected successfully',
+    data: enrollment,
+  });
+});
+
+export const getPendingEnrollments = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+
+  // For instructors, only show enrollments for their courses
+  // For admins, show all pending enrollments
+  const instructorId = req.user.role === 'instructor' ? req.userId : null;
+
+  const result = await EnrollmentService.getPendingEnrollments(instructorId, parseInt(page), parseInt(limit));
+  res.status(200).json({
+    success: true,
+    data: result,
+  });
+});

@@ -7,14 +7,19 @@ import { sendEmail, enrollmentEmailTemplate } from '../utils/emailService.js';
 
 export class EnrollmentService {
   static async enrollStudent(studentId, courseId, userEmail, userName) {
-    // Check if already enrolled
+    // Check if already enrolled with active or pending status
     const existingEnrollment = await Enrollment.findOne({
       student: studentId,
       course: courseId,
+      status: { $in: ['active', 'pending_approval'] }
     });
 
     if (existingEnrollment) {
-      throw new AppError('Already enrolled in this course', 400);
+      if (existingEnrollment.status === 'pending_approval') {
+        throw new AppError('You already have a pending enrollment request for this course', 400);
+      } else {
+        throw new AppError('You are already enrolled in this course', 400);
+      }
     }
 
     const course = await Course.findById(courseId);
@@ -25,14 +30,14 @@ export class EnrollmentService {
     const enrollment = new Enrollment({
       student: studentId,
       course: courseId,
-      status: 'active',
+      status: 'pending_approval',
     });
 
     await enrollment.save();
 
-    // Update course enrollment count
-    course.enrollmentCount += 1;
-    await course.save();
+    // Don't update course enrollment count until approved
+    // course.enrollmentCount += 1;
+    // await course.save();
 
     // Send enrollment email
     try {
@@ -42,14 +47,18 @@ export class EnrollmentService {
       console.error('Error sending enrollment email:', error);
     }
 
-    return enrollment.populate('course', 'title thumbnail').populate('student', 'firstName lastName email');
+    // Return populated enrollment
+    return await Enrollment.findById(enrollment._id)
+      .populate('course', 'title thumbnail')
+      .populate('student', 'firstName lastName email');
   }
 
   static async getStudentEnrollments(studentId, page = 1, limit = 10) {
     const skip = (page - 1) * limit;
 
     const enrollments = await Enrollment.find({ student: studentId })
-      .populate('course', 'title thumbnail category level enrollmentCount')
+      .populate('course', 'title thumbnail category level enrollmentCount instructor')
+      .populate('course.instructor', 'firstName lastName')
       .skip(skip)
       .limit(limit)
       .sort({ enrollmentDate: -1 });
@@ -156,5 +165,83 @@ export class EnrollmentService {
     }
 
     return enrollment;
+  }
+
+  static async approveEnrollment(enrollmentId, approvedBy) {
+    const enrollment = await Enrollment.findById(enrollmentId);
+
+    if (!enrollment) {
+      throw new AppError('Enrollment not found', 404);
+    }
+
+    if (enrollment.status !== 'pending_approval') {
+      throw new AppError('Enrollment is not pending approval', 400);
+    }
+
+    enrollment.status = 'active';
+    await enrollment.save();
+
+    // Update course enrollment count
+    const course = await Course.findById(enrollment.course);
+    if (course) {
+      course.enrollmentCount += 1;
+      await course.save();
+    }
+
+    // Return populated enrollment
+    return await Enrollment.findById(enrollmentId)
+      .populate('course', 'title')
+      .populate('student', 'firstName lastName email');
+  }
+
+  static async rejectEnrollment(enrollmentId, approvedBy) {
+    const enrollment = await Enrollment.findById(enrollmentId);
+
+    if (!enrollment) {
+      throw new AppError('Enrollment not found', 404);
+    }
+
+    if (enrollment.status !== 'pending_approval') {
+      throw new AppError('Enrollment is not pending approval', 400);
+    }
+
+    enrollment.status = 'rejected';
+    await enrollment.save();
+
+    // Return populated enrollment
+    return await Enrollment.findById(enrollmentId)
+      .populate('course', 'title')
+      .populate('student', 'firstName lastName email');
+  }
+
+  static async getPendingEnrollments(instructorId = null, page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+
+    let query = { status: 'pending_approval' };
+
+    // If instructorId is provided, only show enrollments for their courses
+    if (instructorId) {
+      const { Course } = await import('../models/Course.js');
+      const instructorCourses = await Course.find({ instructor: instructorId }).select('_id');
+      const courseIds = instructorCourses.map(c => c._id);
+      query.course = { $in: courseIds };
+    }
+
+    const enrollments = await Enrollment.find(query)
+      .populate('student', 'firstName lastName email')
+      .populate('course', 'title instructor')
+      .populate('course.instructor', 'firstName lastName')
+      .skip(skip)
+      .limit(limit)
+      .sort({ enrollmentDate: -1 });
+
+    const total = await Enrollment.countDocuments(query);
+
+    return {
+      enrollments,
+      total,
+      pages: Math.ceil(total / limit),
+      currentPage: page,
+    };
   }
 }

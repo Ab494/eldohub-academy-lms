@@ -12,9 +12,16 @@ import NotFound from "./pages/NotFound";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import StudentDashboard from "./pages/dashboard/StudentDashboard";
+import StudentCourses from "./pages/dashboard/StudentCourses";
+import StudentAchievements from "./pages/dashboard/StudentAchievements";
+import StudentAssignments from "./pages/dashboard/StudentAssignments";
+import StudentCertificates from "./pages/dashboard/StudentCertificates";
 import InstructorDashboard from "./pages/dashboard/InstructorDashboard";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import AdminCourseCreate from "./components/admin/AdminCourseCreate";
+import InstructorCourseCreate from "./components/instructor/InstructorCourseCreate";
 import CoursePlayer from "./pages/CoursePlayer";
+import Courses from "./pages/Courses";
 
 const queryClient = new QueryClient();
 
@@ -30,15 +37,16 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/courses" element={<Courses />} />
             <Route path="/course/:courseId" element={<CoursePlayer />} />
 
             {/* Student Dashboard */}
             <Route path="/dashboard" element={<DashboardLayout />}>
-              <Route index element={<StudentDashboard />} />
-              <Route path="courses" element={<StudentDashboard />} />
-              <Route path="achievements" element={<StudentDashboard />} />
-              <Route path="assignments" element={<StudentDashboard />} />
-              <Route path="certificates" element={<StudentDashboard />} />
+              <Route index element={<StudentCourses />} />
+              <Route path="courses" element={<StudentCourses />} />
+              <Route path="achievements" element={<StudentAchievements />} />
+              <Route path="assignments" element={<StudentAssignments />} />
+              <Route path="certificates" element={<StudentCertificates />} />
             </Route>
 
             {/* Instructor Dashboard */}
@@ -49,6 +57,7 @@ const App = () => (
             }>
               <Route index element={<InstructorDashboard />} />
               <Route path="courses" element={<InstructorDashboard />} />
+              <Route path="courses/create" element={<InstructorCourseCreate />} />
               <Route path="create" element={<InstructorDashboard />} />
               <Route path="submissions" element={<InstructorDashboard />} />
               <Route path="analytics" element={<InstructorDashboard />} />
@@ -60,11 +69,12 @@ const App = () => (
                 <DashboardLayout />
               </ProtectedRoute>
             }>
-              <Route index element={<AdminDashboard />} />
-              <Route path="users" element={<AdminDashboard />} />
-              <Route path="courses" element={<AdminDashboard />} />
-              <Route path="approvals" element={<AdminDashboard />} />
-              <Route path="analytics" element={<AdminDashboard />} />
+              <Route index element={<AdminDashboard key="admin-dashboard" />} />
+              <Route path="users" element={<AdminDashboard key="admin-users" />} />
+              <Route path="courses" element={<AdminDashboard key="admin-courses" />} />
+              <Route path="courses/create" element={<AdminCourseCreate key="admin-course-create" />} />
+              <Route path="approvals" element={<AdminDashboard key="admin-approvals" />} />
+              <Route path="analytics" element={<AdminDashboard key="admin-analytics" />} />
             </Route>
 
             {/* Settings & Help */}

@@ -7,6 +7,7 @@ import { config } from './config/index.js';
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import instructorRoutes from './routes/instructorRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
 import moduleRoutes from './routes/moduleRoutes.js';
 import lessonRoutes from './routes/lessonRoutes.js';
@@ -55,12 +56,14 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/instructor', instructorRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/courses/:courseId/modules', moduleRoutes);
 app.use('/api/courses/:courseId/modules/:moduleId/lessons', lessonRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/courses/:courseId/quizzes', quizRoutes);
 app.use('/api/courses/:courseId/assignments', assignmentRoutes);
+app.use('/api/assignments', assignmentRoutes);
 app.use('/api/certificates', certificateRoutes);
 
 // 404 handler

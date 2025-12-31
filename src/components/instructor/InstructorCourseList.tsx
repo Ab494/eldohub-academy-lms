@@ -98,7 +98,7 @@ const InstructorCourseList: React.FC = () => {
           Start creating your first course and share your knowledge with students around the world!
         </p>
         <Button variant="hero" asChild>
-          <Link to="/instructor/courses/new">
+          <Link to="/instructor/courses/create">
             <Plus className="w-4 h-4 mr-1" />
             Create Your First Course
           </Link>

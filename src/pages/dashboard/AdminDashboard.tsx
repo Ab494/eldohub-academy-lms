@@ -17,6 +17,8 @@ import AdminUsers from '@/components/admin/AdminUsers';
 import AdminCourses from '@/components/admin/AdminCourses';
 import AdminApprovals from '@/components/admin/AdminApprovals';
 import AdminAnalytics from '@/components/admin/AdminAnalytics';
+import AdminCourseCreate from '@/components/admin/AdminCourseCreate';
+import EnrollmentRequests from '@/components/admin/EnrollmentRequests';
 import { useAuth } from '@/store/AuthContext';
 import { adminAPI } from '@/lib/apiClient';
 import { useToast } from '@/hooks/use-toast';
@@ -67,20 +69,12 @@ const AdminDashboard: React.FC = () => {
     return <AdminAnalytics />;
   }
 
-  // Reset state when location changes
   useEffect(() => {
+    // Only fetch stats when on the main dashboard route
     if (location.pathname === '/admin') {
-      setStats(null);
-      setLoading(true);
-    }
-  }, [location.pathname]);
-
-  // Fetch data when on dashboard route
-  useEffect(() => {
-    if (location.pathname === '/admin' && loading) {
       fetchDashboardStats();
     }
-  }, [location.pathname, loading]);
+  }, []); // Run once on mount since each route gets a fresh component instance
 
   const fetchDashboardStats = async () => {
     try {
@@ -158,42 +152,9 @@ const AdminDashboard: React.FC = () => {
 
       {/* Main Content Grid */}
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Pending Approvals - Empty State */}
+        {/* Enrollment Requests */}
         <div className="lg:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-primary" />
-              Pending Approvals
-            </h2>
-          </div>
-
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
-          ) : stats?.approvals.pending === 0 ? (
-            <div className="bg-card rounded-xl border border-border p-12 text-center shadow-card">
-              <CheckSquare className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-foreground mb-2">No Pending Approvals</h3>
-              <p className="text-muted-foreground">
-                All course submissions have been reviewed.
-              </p>
-            </div>
-          ) : (
-            <div className="bg-card rounded-xl border border-border p-6 shadow-card">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-foreground">
-                  {stats?.approvals.pending} Pending Approvals
-                </h3>
-                <Button variant="outline" size="sm">
-                  Review All
-                </Button>
-              </div>
-              <p className="text-muted-foreground text-sm">
-                {stats?.approvals.recent} new submissions in the last 7 days
-              </p>
-            </div>
-          )}
+          <EnrollmentRequests title="Pending Enrollment Requests" />
         </div>
 
         {/* Recent Users - Empty State */}

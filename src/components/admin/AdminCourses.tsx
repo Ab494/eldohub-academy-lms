@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { Search, Eye, Edit, Trash2, Plus, BookOpen, Users, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -150,9 +150,11 @@ const AdminCourses: React.FC = () => {
           <h2 className="text-2xl font-bold text-foreground">Course Management</h2>
           <p className="text-muted-foreground">Manage all courses on the platform</p>
         </div>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          Add Course
+        <Button className="gap-2" asChild>
+          <Link to="/admin/courses/create">
+            <Plus className="w-4 h-4" />
+            Add Course
+          </Link>
         </Button>
       </div>
 

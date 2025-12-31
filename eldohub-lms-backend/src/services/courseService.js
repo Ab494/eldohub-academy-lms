@@ -15,14 +15,15 @@ export class CourseService {
     return course.populate('instructor', 'firstName lastName email');
   }
 
-  static async updateCourse(courseId, updateData, instructorId) {
+  static async updateCourse(courseId, updateData, instructorId, userRole = 'instructor') {
     const course = await Course.findById(courseId);
 
     if (!course) {
       throw new AppError('Course not found', 404);
     }
 
-    if (course.instructor.toString() !== instructorId && instructorId.role !== 'admin') {
+    // Allow admins to update any course, instructors can only update their own
+    if (userRole !== 'admin' && course.instructor.toString() !== instructorId) {
       throw new AppError('Not authorized to update this course', 403);
     }
 
@@ -45,21 +46,24 @@ export class CourseService {
     return course.populate('instructor', 'firstName lastName email');
   }
 
-  static async publishCourse(courseId, instructorId) {
+  static async publishCourse(courseId, instructorId, userRole = 'instructor') {
     const course = await Course.findById(courseId);
 
     if (!course) {
       throw new AppError('Course not found', 404);
     }
 
-    if (course.instructor.toString() !== instructorId) {
+    // Allow admins to publish any course, instructors can only publish their own
+    if (userRole !== 'admin' && course.instructor.toString() !== instructorId) {
       throw new AppError('Not authorized', 403);
     }
 
-    // Check if course has at least one module with lessons
-    const modules = await Module.find({ course: courseId }).populate('lessons');
-    if (modules.length === 0 || modules.every(m => m.lessons.length === 0)) {
-      throw new AppError('Course must have at least one lesson', 400);
+    // Check if course has at least one module with lessons (skip for admins)
+    if (userRole !== 'admin') {
+      const modules = await Module.find({ course: courseId }).populate('lessons');
+      if (modules.length === 0 || modules.every(m => m.lessons.length === 0)) {
+        throw new AppError('Course must have at least one lesson', 400);
+      }
     }
 
     course.status = 'published';
@@ -123,14 +127,15 @@ export class CourseService {
     };
   }
 
-  static async deleteCourse(courseId, instructorId) {
+  static async deleteCourse(courseId, instructorId, userRole = 'instructor') {
     const course = await Course.findById(courseId);
 
     if (!course) {
       throw new AppError('Course not found', 404);
     }
 
-    if (course.instructor.toString() !== instructorId) {
+    // Allow admins to delete any course, instructors can only delete their own
+    if (userRole !== 'admin' && course.instructor.toString() !== instructorId) {
       throw new AppError('Not authorized', 403);
     }
 

@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  BookOpen, 
-  Users, 
-  ClipboardCheck, 
+import {
+  BookOpen,
+  Users,
+  ClipboardCheck,
   TrendingUp,
   Plus,
   Eye,
   Edit,
   Settings,
-  MoreVertical
+  MoreVertical,
+  UserCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -18,10 +19,33 @@ import { useAuth } from '@/store/AuthContext';
 import InstructorCourseList from '@/components/instructor/InstructorCourseList';
 import CourseBuilder from '@/components/instructor/CourseBuilder';
 import AssignmentsGrading from '@/components/instructor/AssignmentsGrading';
+import InstructorAnalytics from '@/components/instructor/InstructorAnalytics';
+import EnrollmentRequests from '@/components/admin/EnrollmentRequests';
+import { instructorAPI } from '@/lib/apiClient';
 
 const InstructorDashboard: React.FC = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
+  const [dashboardData, setDashboardData] = useState({
+    courses: { total: 0, published: 0, draft: 0 },
+    students: { total: 0 },
+    analytics: { averageCompletion: 0, totalRevenue: 0 }
+  });
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await instructorAPI.getDashboard();
+        if (response.success) {
+          setDashboardData(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch dashboard data', error);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -36,7 +60,7 @@ const InstructorDashboard: React.FC = () => {
           </p>
         </div>
         <Button variant="hero" asChild>
-          <Link to="/instructor/courses/new">
+          <Link to="/instructor/courses/create">
             <Plus className="w-4 h-4 mr-1" />
             Create Course
           </Link>
@@ -47,25 +71,25 @@ const InstructorDashboard: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard
           title="Courses Created"
-          value={0}
+          value={dashboardData.courses.total}
           icon={BookOpen}
           variant="primary"
         />
         <StatsCard
           title="Total Students"
-          value={0}
+          value={dashboardData.students.total}
           icon={Users}
           variant="secondary"
         />
         <StatsCard
-          title="Pending Reviews"
-          value={0}
+          title="Draft Courses"
+          value={dashboardData.courses.draft}
           icon={ClipboardCheck}
           variant="accent"
         />
         <StatsCard
           title="Avg. Completion"
-          value="0%"
+          value={`${dashboardData.analytics.averageCompletion}%`}
           icon={TrendingUp}
           variant="primary"
         />
@@ -78,9 +102,17 @@ const InstructorDashboard: React.FC = () => {
             <BookOpen className="w-4 h-4 mr-2" />
             My Courses
           </TabsTrigger>
+          <TabsTrigger value="enrollments" className="data-[state=active]:bg-background">
+            <UserCheck className="w-4 h-4 mr-2" />
+            Enrollment Requests
+          </TabsTrigger>
           <TabsTrigger value="builder" className="data-[state=active]:bg-background">
             <Settings className="w-4 h-4 mr-2" />
             Course Builder
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="data-[state=active]:bg-background">
+            <TrendingUp className="w-4 h-4 mr-2" />
+            Analytics
           </TabsTrigger>
           <TabsTrigger value="grading" className="data-[state=active]:bg-background">
             <ClipboardCheck className="w-4 h-4 mr-2" />
@@ -92,8 +124,16 @@ const InstructorDashboard: React.FC = () => {
           <InstructorCourseList />
         </TabsContent>
 
+        <TabsContent value="enrollments" className="space-y-6">
+          <EnrollmentRequests title="Pending Enrollment Requests for Your Courses" />
+        </TabsContent>
+
         <TabsContent value="builder" className="space-y-6">
           <CourseBuilder />
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-6">
+          <InstructorAnalytics />
         </TabsContent>
 
         <TabsContent value="grading" className="space-y-6">

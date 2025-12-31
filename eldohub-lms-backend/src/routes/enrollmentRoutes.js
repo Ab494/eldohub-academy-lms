@@ -1,6 +1,6 @@
 import express from 'express';
 import * as enrollmentController from '../controllers/enrollmentController.js';
-import { authenticate } from '../middlewares/auth.js';
+import { authenticate, authorize } from '../middlewares/auth.js';
 
 const router = express.Router();
 
@@ -37,6 +37,30 @@ router.get(
   '/:courseId/progress',
   authenticate,
   enrollmentController.getProgress
+);
+
+// Approve enrollment (instructors and admins)
+router.post(
+  '/:enrollmentId/approve',
+  authenticate,
+  authorize('instructor', 'admin'),
+  enrollmentController.approveEnrollment
+);
+
+// Reject enrollment (instructors and admins)
+router.post(
+  '/:enrollmentId/reject',
+  authenticate,
+  authorize('instructor', 'admin'),
+  enrollmentController.rejectEnrollment
+);
+
+// Get pending enrollments (instructors and admins)
+router.get(
+  '/pending',
+  authenticate,
+  authorize('instructor', 'admin'),
+  enrollmentController.getPendingEnrollments
 );
 
 export default router;

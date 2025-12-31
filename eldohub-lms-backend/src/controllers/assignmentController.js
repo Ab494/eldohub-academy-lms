@@ -109,3 +109,18 @@ export const getMySubmissions = asyncHandler(async (req, res) => {
     data: result,
   });
 });
+
+export const getMyAssignments = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+
+  const result = await AssignmentService.getStudentAssignments(
+    req.userId,
+    parseInt(page),
+    parseInt(limit)
+  );
+
+  res.status(200).json({
+    success: true,
+    data: result,
+  });
+});

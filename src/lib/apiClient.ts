@@ -188,6 +188,10 @@ export const enrollmentAPI = {
   markLessonComplete: (courseId: string, lessonId: string) =>
     apiClient.post(`/enrollments/${courseId}/lessons/${lessonId}/complete`, {}),
   getProgress: (courseId: string) => apiClient.get(`/enrollments/${courseId}/progress`),
+  approveEnrollment: (enrollmentId: string) => apiClient.post(`/enrollments/${enrollmentId}/approve`, {}),
+  rejectEnrollment: (enrollmentId: string) => apiClient.post(`/enrollments/${enrollmentId}/reject`, {}),
+  getPendingEnrollments: (params: Record<string, any> = {}) =>
+    apiClient.get(`/enrollments/pending?${new URLSearchParams(params)}`),
 };
 
 // Quiz endpoints
@@ -218,6 +222,8 @@ export const assignmentAPI = {
     ),
   getMySubmissions: (courseId: string, params: Record<string, any> = {}) =>
     apiClient.get(`/courses/${courseId}/assignments/my/submissions/${courseId}?${new URLSearchParams(params)}`),
+  getMyAssignments: (params: Record<string, any> = {}) =>
+    apiClient.get(`/assignments/my/assignments?${new URLSearchParams(params)}`),
 };
 
 // User endpoints (Admin only)
@@ -237,6 +243,12 @@ export const adminAPI = {
   getRevenueStats: () => apiClient.get('/admin/stats/revenue'),
   getDashboardStats: () => apiClient.get('/admin/stats/dashboard'),
   getAllCourses: (params: Record<string, any> = {}) => apiClient.get(`/admin/courses?${new URLSearchParams(params)}`),
+};
+
+// Instructor endpoints
+export const instructorAPI = {
+  getDashboard: () => apiClient.get('/instructor/dashboard'),
+  getAnalytics: () => apiClient.get('/instructor/analytics'),
 };
 
 // Certificate endpoints

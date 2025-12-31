@@ -10,7 +10,7 @@ interface EnrolledCourseCardProps {
     _id: string;
     title: string;
     thumbnail?: string;
-    instructor: {
+    instructor?: {
       firstName: string;
       lastName: string;
     };
@@ -22,7 +22,9 @@ interface EnrolledCourseCardProps {
 }
 
 const EnrolledCourseCard: React.FC<EnrolledCourseCardProps> = ({ course, onContinue }) => {
-  const instructorName = `${course.instructor.firstName} ${course.instructor.lastName}`;
+  const instructorName = course.instructor
+    ? `${course.instructor.firstName} ${course.instructor.lastName}`
+    : 'Unknown Instructor';
 
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/20">

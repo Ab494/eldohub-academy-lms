@@ -132,4 +132,34 @@ export class AssignmentService {
       currentPage: page,
     };
   }
+
+  static async getStudentAssignments(studentId, page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+
+    // First get all courses the student is enrolled in
+    const { Enrollment } = await import('../models/Enrollment.js');
+    const enrollments = await Enrollment.find({ student: studentId }).select('course');
+    const courseIds = enrollments.map(e => e.course);
+
+    // Get assignments from those courses
+    const assignments = await Assignment.find({
+      course: { $in: courseIds }
+    })
+      .populate('course', 'title')
+      .populate('lesson', 'title')
+      .skip(skip)
+      .limit(limit)
+      .sort({ dueDate: 1 });
+
+    const total = await Assignment.countDocuments({
+      course: { $in: courseIds }
+    });
+
+    return {
+      assignments,
+      total,
+      pages: Math.ceil(total / limit),
+      currentPage: page,
+    };
+  }
 }

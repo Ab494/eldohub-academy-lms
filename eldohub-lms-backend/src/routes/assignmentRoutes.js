@@ -49,4 +49,11 @@ router.get(
   assignmentController.getMySubmissions
 );
 
+// Get my assignments (across all enrolled courses)
+router.get(
+  '/my/assignments',
+  authenticate,
+  assignmentController.getMyAssignments
+);
+
 export default router;

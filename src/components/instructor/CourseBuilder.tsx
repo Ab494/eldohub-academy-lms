@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
+import { moduleAPI, lessonAPI, courseAPI } from '@/lib/apiClient';
 import {
   BookOpen,
   Plus,
@@ -66,6 +68,9 @@ interface Course {
 }
 
 const CourseBuilder: React.FC = () => {
+  const { courseId } = useParams<{ courseId: string }>();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedCourse, setSelectedCourse] = useState<string>('');
   const [modules, setModules] = useState<Module[]>([]);
   const [showModuleDialog, setShowModuleDialog] = useState(false);
@@ -99,6 +104,12 @@ const CourseBuilder: React.FC = () => {
 
     loadCourses();
   }, []);
+
+  useEffect(() => {
+    if (courseId) {
+      setSelectedCourse(courseId);
+    }
+  }, [courseId]);
 
   const toggleModuleExpand = (moduleId: string) => {
     setModules(modules.map(m =>
@@ -167,6 +178,48 @@ const CourseBuilder: React.FC = () => {
     ));
   };
 
+  const handlePublishChanges = async () => {
+    if (!selectedCourse) return;
+
+    try {
+      // Save modules and lessons
+      for (const module of modules) {
+        // Create module
+        const moduleData = { title: module.title };
+        const moduleResponse = await moduleAPI.createModule(selectedCourse, moduleData);
+        const createdModuleId = moduleResponse.data._id;
+
+        // Create lessons for this module
+        for (const lesson of module.lessons) {
+          const lessonData = {
+            title: lesson.title,
+            description: `Description for ${lesson.title}`,
+            type: lesson.type,
+            content: lesson.type === 'text' ? 'Sample content' : 'Sample content',
+            videoUrl: lesson.type === 'video' ? 'https://example.com/video' : undefined,
+            duration: lesson.duration,
+          };
+          await lessonAPI.createLesson(selectedCourse, createdModuleId, lessonData);
+        }
+      }
+
+      // Publish the course
+      await courseAPI.publishCourse(selectedCourse);
+
+      toast({
+        title: 'Changes Published Successfully!',
+        description: 'Your course content has been saved and published.',
+      });
+    } catch (error: any) {
+      console.error('Failed to publish changes', error);
+      toast({
+        title: 'Publish Failed',
+        description: error.message || 'Failed to publish changes. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const getLessonIcon = (type: string) => {
     switch (type) {
       case 'video':
@@ -228,11 +281,19 @@ const CourseBuilder: React.FC = () => {
           
           {selectedCourse && (
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate(`/course/${selectedCourse}`)}
+              >
                 <Eye className="w-4 h-4 mr-1" />
                 Preview
               </Button>
-              <Button variant="hero" size="sm">
+              <Button
+                variant="hero"
+                size="sm"
+                onClick={handlePublishChanges}
+              >
                 <Save className="w-4 h-4 mr-1" />
                 Publish Changes
               </Button>

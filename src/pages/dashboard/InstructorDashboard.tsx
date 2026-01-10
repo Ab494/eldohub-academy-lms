@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   BookOpen,
   Users,
@@ -25,6 +25,8 @@ import { instructorAPI } from '@/lib/apiClient';
 
 const InstructorDashboard: React.FC = () => {
   const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [dashboardData, setDashboardData] = useState({
     courses: { total: 0, published: 0, draft: 0 },
@@ -46,6 +48,18 @@ const InstructorDashboard: React.FC = () => {
 
     fetchDashboardData();
   }, []);
+
+  useEffect(() => {
+    // Sync activeTab with current route
+    const path = location.pathname;
+    if (path === '/instructor' || path === '/instructor/courses') {
+      setActiveTab('overview');
+    } else if (path === '/instructor/analytics') {
+      setActiveTab('analytics');
+    } else if (path === '/instructor/submissions') {
+      setActiveTab('grading');
+    }
+  }, [location.pathname]);
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -96,7 +110,17 @@ const InstructorDashboard: React.FC = () => {
       </div>
 
       {/* Main Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs value={activeTab} onValueChange={(value) => {
+        setActiveTab(value);
+        // Navigate to corresponding route
+        if (value === 'overview') {
+          navigate('/instructor/courses');
+        } else if (value === 'analytics') {
+          navigate('/instructor/analytics');
+        } else if (value === 'grading') {
+          navigate('/instructor/submissions');
+        }
+      }} className="space-y-6">
         <TabsList className="bg-muted/50 p-1">
           <TabsTrigger value="overview" className="data-[state=active]:bg-background">
             <BookOpen className="w-4 h-4 mr-2" />

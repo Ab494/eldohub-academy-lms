@@ -14,7 +14,7 @@ const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { register } = useAuth();
+  const { register, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -30,7 +30,15 @@ const Register: React.FC = () => {
         title: 'Account created!',
         description: 'Welcome to OTI Academy.',
       });
-      navigate('/dashboard');
+
+      // Redirect based on user role
+      if (user?.role === 'admin') {
+        navigate('/admin');
+      } else if (user?.role === 'instructor') {
+        navigate('/instructor');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       toast({
         title: 'Registration failed',

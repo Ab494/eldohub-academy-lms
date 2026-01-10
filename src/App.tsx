@@ -20,6 +20,8 @@ import InstructorDashboard from "./pages/dashboard/InstructorDashboard";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import AdminCourseCreate from "./components/admin/AdminCourseCreate";
 import InstructorCourseCreate from "./components/instructor/InstructorCourseCreate";
+import CourseBuilder from "./components/instructor/CourseBuilder";
+import EnrollmentRequests from "./components/admin/EnrollmentRequests";
 import CoursePlayer from "./pages/CoursePlayer";
 import Courses from "./pages/Courses";
 
@@ -33,7 +35,6 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -58,6 +59,9 @@ const App = () => (
               <Route index element={<InstructorDashboard />} />
               <Route path="courses" element={<InstructorDashboard />} />
               <Route path="courses/create" element={<InstructorCourseCreate />} />
+              <Route path="courses/:courseId/edit" element={<InstructorCourseCreate />} />
+              <Route path="courses/:courseId/content" element={<CourseBuilder />} />
+              <Route path="courses/:courseId/students" element={<EnrollmentRequests title="Enrolled Students" />} />
               <Route path="create" element={<InstructorDashboard />} />
               <Route path="submissions" element={<InstructorDashboard />} />
               <Route path="analytics" element={<InstructorDashboard />} />

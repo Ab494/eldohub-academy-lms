@@ -40,7 +40,7 @@ const navItems: NavItem[] = [
   // Instructor items
   { icon: LayoutDashboard, label: 'Dashboard', href: '/instructor', roles: ['instructor'] },
   { icon: BookOpen, label: 'My Courses', href: '/instructor/courses', roles: ['instructor'] },
-  { icon: PlusCircle, label: 'Create Course', href: '/instructor/create', roles: ['instructor'] },
+  { icon: PlusCircle, label: 'Create Course', href: '/instructor/courses/create', roles: ['instructor'] },
   { icon: ClipboardList, label: 'Submissions', href: '/instructor/submissions', roles: ['instructor'] },
   { icon: BarChart3, label: 'Analytics', href: '/instructor/analytics', roles: ['instructor'] },
   

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Save, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,14 +12,16 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { courseAPI } from '@/lib/apiClient';
 
 const InstructorCourseCreate: React.FC = () => {
   const navigate = useNavigate();
+  const { courseId } = useParams<{ courseId: string }>();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -27,6 +29,35 @@ const InstructorCourseCreate: React.FC = () => {
     level: 'beginner' as 'beginner' | 'intermediate' | 'advanced',
     price: 0,
   });
+
+  useEffect(() => {
+    if (courseId) {
+      setIsEdit(true);
+      // Fetch course data for editing
+      const fetchCourse = async () => {
+        try {
+          const response = await courseAPI.getCourseById(courseId);
+          if (response.success) {
+            const course = response.data;
+            setFormData({
+              title: course.title || '',
+              description: course.description || '',
+              category: course.category || '',
+              level: course.level || 'beginner',
+              price: course.price || 0,
+            });
+          }
+        } catch (error: any) {
+          toast({
+            title: 'Error',
+            description: 'Failed to load course data',
+            variant: 'destructive',
+          });
+        }
+      };
+      fetchCourse();
+    }
+  }, [courseId, toast]);
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({
@@ -54,19 +85,32 @@ const InstructorCourseCreate: React.FC = () => {
         status: 'draft' as const, // Instructors create draft courses that need admin approval
       };
 
-      const response = await courseAPI.createCourse(courseData);
+      let response;
+      if (isEdit && courseId) {
+        response = await courseAPI.updateCourse(courseId, courseData);
+        if (response.success) {
+          toast({
+            title: 'Course Updated Successfully!',
+            description: 'Your course has been updated.',
+          });
+        }
+      } else {
+        response = await courseAPI.createCourse(courseData);
+        if (response.success) {
+          toast({
+            title: 'Course Created Successfully!',
+            description: 'Your course has been submitted for admin approval.',
+          });
+        }
+      }
 
       if (response.success) {
-        toast({
-          title: 'Course Created Successfully!',
-          description: 'Your course has been submitted for admin approval.',
-        });
         navigate('/instructor');
       }
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to create course',
+        description: error.message || `Failed to ${isEdit ? 'update' : 'create'} course`,
         variant: 'destructive',
       });
     } finally {
@@ -85,9 +129,9 @@ const InstructorCourseCreate: React.FC = () => {
           </Link>
         </Button>
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Create New Course</h1>
-          <p className="text-muted-foreground">Share your knowledge with students worldwide</p>
-        </div>
+           <h1 className="text-2xl font-bold text-foreground">{isEdit ? 'Edit Course' : 'Create New Course'}</h1>
+           <p className="text-muted-foreground">{isEdit ? 'Update your course details' : 'Share your knowledge with students worldwide'}</p>
+         </div>
       </div>
 
       {/* Info Alert */}
@@ -182,12 +226,12 @@ const InstructorCourseCreate: React.FC = () => {
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Creating Course...
+                  {isEdit ? 'Updating Course...' : 'Creating Course...'}
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4 mr-2" />
-                  Submit for Approval
+                  {isEdit ? 'Update Course' : 'Submit for Approval'}
                 </>
               )}
             </Button>

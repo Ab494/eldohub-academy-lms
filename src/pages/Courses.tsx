@@ -95,7 +95,7 @@ const Courses: React.FC = () => {
     setEnrollingCourses(prev => new Set(prev).add(courseId));
 
     try {
-      const response = await courseAPI.register(courseId);
+      const response = await enrollmentAPI.enrollCourse(courseId);
       if (response.success) {
         toast({
           title: 'Registration Successful!',
@@ -268,7 +268,7 @@ const Courses: React.FC = () => {
                         }
                       >
                         {enrollmentStatus === 'active' ? 'Enrolled' :
-                         enrollmentStatus === 'pending_approval' ? 'Pending approval' :
+                         enrollmentStatus === 'pending_approval' ? 'Pending' :
                          enrollmentStatus === 'rejected' ? 'Rejected' : enrollmentStatus}
                       </Badge>
                     </div>
@@ -280,9 +280,8 @@ const Courses: React.FC = () => {
                       <Button
                         className="w-full"
                         onClick={() => handleEnroll(course._id)}
-                        disabled={enrollingCourses.has(course._id)}
                       >
-                        {enrollingCourses.has(course._id) ? 'Registering...' : 'Register for Course'}
+                        Register for Course
                       </Button>
                     </div>
                   )}

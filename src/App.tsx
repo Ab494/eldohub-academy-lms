@@ -41,7 +41,7 @@ const App = () => (
             <Route path="/course/:courseId" element={<CoursePlayer />} />
 
             {/* Student Dashboard */}
-            <Route path="/student" element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<StudentCourses />} />
               <Route path="courses" element={<StudentCourses />} />
               <Route path="achievements" element={<StudentAchievements />} />
@@ -64,7 +64,7 @@ const App = () => (
             </Route>
 
             {/* Admin Dashboard */}
-            <Route path="/dashboard" element={
+            <Route path="/admin" element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <DashboardLayout />
               </ProtectedRoute>

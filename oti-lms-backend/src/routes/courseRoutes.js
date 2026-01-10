@@ -1,6 +1,5 @@
 import express from 'express';
 import * as courseController from '../controllers/courseController.js';
-import * as enrollmentController from '../controllers/enrollmentController.js';
 import { authenticate, authorize } from '../middlewares/auth.js';
 import { validateCreateCourse, handleValidationErrors } from '../middlewares/validation.js';
 
@@ -8,9 +7,6 @@ const router = express.Router();
 
 // Public routes
 router.get('/', courseController.getAllCourses);
-
-// Register for course
-router.post('/register', authenticate, enrollmentController.enrollCourse);
 
 // Protected routes (Instructor)
 router.post(

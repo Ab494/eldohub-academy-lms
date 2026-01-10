@@ -13,7 +13,7 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -27,15 +27,7 @@ const Login: React.FC = () => {
         title: 'Welcome back!',
         description: 'You have successfully logged in.',
       });
-
-      // Redirect based on user role
-      if (user?.role === 'admin') {
-        navigate('/dashboard');
-      } else if (user?.role === 'instructor') {
-        navigate('/instructor');
-      } else {
-        navigate('/courses');
-      }
+      navigate('/dashboard');
     } catch (error) {
       toast({
         title: 'Login failed',

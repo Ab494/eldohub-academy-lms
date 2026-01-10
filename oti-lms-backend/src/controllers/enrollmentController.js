@@ -2,7 +2,7 @@ import { EnrollmentService } from '../services/enrollmentService.js';
 import { asyncHandler } from '../utils/errorHandler.js';
 
 export const enrollCourse = asyncHandler(async (req, res) => {
-  const courseId = req.params.courseId || req.body.courseId;
+  const { courseId } = req.params;
   const enrollment = await EnrollmentService.enrollStudent(
     req.userId,
     courseId,

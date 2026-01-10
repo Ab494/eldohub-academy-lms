@@ -104,20 +104,30 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, onToggle
         <nav className="flex-1 overflow-y-auto py-4 px-2">
           <ul className="space-y-1">
             {filteredNavItems.map((item) => {
-              const isActive = location.pathname === item.href;
+              const isActive = location.pathname === item.href || location.pathname.startsWith(item.href + '/');
               return (
                 <li key={item.href}>
                   <Link
                     to={item.href}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
-                      isActive 
-                        ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-soft" 
-                        : "text-sidebar-foreground hover:bg-sidebar-accent"
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group",
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-soft"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                     )}
                   >
-                    <item.icon className="w-5 h-5 shrink-0" />
-                    {!collapsed && <span className="font-medium">{item.label}</span>}
+                    <item.icon className={cn(
+                      "w-5 h-5 shrink-0",
+                      isActive ? "text-primary-foreground" : "text-sidebar-foreground group-hover:text-sidebar-accent-foreground"
+                    )} />
+                    {!collapsed && (
+                      <span className={cn(
+                        "font-medium",
+                        isActive ? "text-primary-foreground" : "text-sidebar-foreground group-hover:text-sidebar-accent-foreground"
+                      )}>
+                        {item.label}
+                      </span>
+                    )}
                   </Link>
                 </li>
               );
@@ -135,27 +145,37 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, onToggle
                   <Link
                     to={item.href}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
-                      isActive 
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground" 
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group",
+                      isActive
+                        ? "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                     )}
                   >
-                    <item.icon className="w-5 h-5 shrink-0" />
-                    {!collapsed && <span className="font-medium">{item.label}</span>}
+                    <item.icon className={cn(
+                      "w-5 h-5 shrink-0",
+                      isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-sidebar-accent-foreground"
+                    )} />
+                    {!collapsed && (
+                      <span className={cn(
+                        "font-medium",
+                        isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-sidebar-accent-foreground"
+                      )}>
+                        {item.label}
+                      </span>
+                    )}
                   </Link>
                 </li>
               );
             })}
             <li>
-              <button
-                onClick={logout}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-destructive hover:bg-destructive/10 transition-all duration-200"
-              >
-                <LogOut className="w-5 h-5 shrink-0" />
-                {!collapsed && <span className="font-medium">Logout</span>}
-              </button>
-            </li>
+               <button
+                 onClick={logout}
+                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-destructive hover:bg-destructive/10 transition-all duration-200 group"
+               >
+                 <LogOut className="w-5 h-5 shrink-0 group-hover:text-destructive" />
+                 {!collapsed && <span className="font-medium group-hover:text-destructive">Logout</span>}
+               </button>
+             </li>
           </ul>
         </div>
 

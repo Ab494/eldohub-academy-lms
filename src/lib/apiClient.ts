@@ -154,6 +154,7 @@ export const courseAPI = {
   deleteCourse: (courseId: string) => apiClient.delete(`/courses/${courseId}`),
   getInstructorCourses: (params: Record<string, any> = {}) =>
     apiClient.get(`/courses/instructor/my-courses?${new URLSearchParams(params)}`),
+  register: (courseId: string) => apiClient.post('/courses/register', { courseId }),
 };
 
 // Module endpoints

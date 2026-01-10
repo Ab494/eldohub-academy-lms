@@ -1,4 +1,4 @@
-# Eldohub LMS Backend - API Documentation
+# Oval Training Institute "OTI" LMS Backend - API Documentation
 
 ## Base URL
 ```

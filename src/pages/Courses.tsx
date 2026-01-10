@@ -50,6 +50,7 @@ const Courses: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [enrollingCourses, setEnrollingCourses] = useState<Set<string>>(new Set());
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [levelFilter, setLevelFilter] = useState('all');
@@ -90,21 +91,31 @@ const Courses: React.FC = () => {
   };
 
   const handleEnroll = async (courseId: string) => {
+    // Add course to enrolling set
+    setEnrollingCourses(prev => new Set(prev).add(courseId));
+
     try {
-      const response = await enrollmentAPI.enrollCourse(courseId);
+      const response = await courseAPI.register(courseId);
       if (response.success) {
         toast({
-          title: 'Enrollment Requested',
-          description: 'Your enrollment request has been submitted for approval.',
+          title: 'Registration Successful!',
+          description: response.message || 'Your enrollment request has been submitted for approval.',
         });
         // Refresh enrollments
         fetchEnrollments();
       }
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to enroll in course',
+        title: 'Registration Failed',
+        description: error.message || 'Failed to register for course. Please try again.',
         variant: 'destructive',
+      });
+    } finally {
+      // Remove course from enrolling set
+      setEnrollingCourses(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(courseId);
+        return newSet;
       });
     }
   };
@@ -257,7 +268,7 @@ const Courses: React.FC = () => {
                         }
                       >
                         {enrollmentStatus === 'active' ? 'Enrolled' :
-                         enrollmentStatus === 'pending_approval' ? 'Pending' :
+                         enrollmentStatus === 'pending_approval' ? 'Pending approval' :
                          enrollmentStatus === 'rejected' ? 'Rejected' : enrollmentStatus}
                       </Badge>
                     </div>
@@ -269,8 +280,9 @@ const Courses: React.FC = () => {
                       <Button
                         className="w-full"
                         onClick={() => handleEnroll(course._id)}
+                        disabled={enrollingCourses.has(course._id)}
                       >
-                        Register for Course
+                        {enrollingCourses.has(course._id) ? 'Registering...' : 'Register for Course'}
                       </Button>
                     </div>
                   )}

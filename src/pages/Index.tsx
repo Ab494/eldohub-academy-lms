@@ -56,7 +56,7 @@ const Index: React.FC = () => {
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-6">
                 Unlock Your
                 <span className="block text-primary">Full Potential</span>
-                With ELDOHUB
+                With OTI
               </h1>
               
               <p className="text-lg text-muted-foreground mb-8 max-w-lg">
@@ -124,7 +124,7 @@ const Index: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Why Choose ELDOHUB Academy?
+              Why Choose OTI Academy?
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               We provide everything you need to succeed in your learning journey
@@ -185,7 +185,7 @@ const Index: React.FC = () => {
             Ready to Start Your Journey?
           </h2>
           <p className="text-lg text-primary-foreground/80 max-w-2xl mx-auto mb-8">
-            Join ELDOHUB Academy and unlock your potential. 
+            Join OTI Academy and unlock your potential.
             Start your free trial today.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
@@ -208,11 +208,11 @@ const Index: React.FC = () => {
                 <GraduationCap className="w-6 h-6 text-primary-foreground" />
               </div>
               <span className="text-xl font-bold text-foreground">
-                ELDO<span className="text-primary">HUB</span>
+                OTI
               </span>
             </div>
             <p className="text-muted-foreground">
-              &copy; 2024 ELDOHUB Academy. All rights reserved.
+              &copy; 2024 OTI Academy. All rights reserved.
             </p>
           </div>
         </div>

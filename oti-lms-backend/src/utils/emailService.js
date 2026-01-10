@@ -35,7 +35,7 @@ export const enrollmentEmailTemplate = (studentName, courseName) => `
     <h2>Welcome to ${courseName}!</h2>
     <p>Hi ${studentName},</p>
     <p>You have successfully enrolled in <strong>${courseName}</strong>. You can now access all course materials and lessons.</p>
-    <p>Best regards,<br/>Eldohub Academy Team</p>
+    <p>Best regards,<br/>Oval Training Institute "OTI" Team</p>
   </div>
 `;
 
@@ -46,7 +46,7 @@ export const assignmentGradeEmailTemplate = (studentName, courseName, assignment
     <p>Your assignment for <strong>${courseName}</strong> has been graded.</p>
     <p><strong>Grade:</strong> ${grade}%</p>
     <p><strong>Feedback:</strong> ${feedback}</p>
-    <p>Best regards,<br/>Eldohub Academy Team</p>
+    <p>Best regards,<br/>Oval Training Institute "OTI" Team</p>
   </div>
 `;
 
@@ -57,6 +57,6 @@ export const courseCompletionEmailTemplate = (studentName, courseName, certifica
     <p>You have successfully completed <strong>${courseName}</strong>!</p>
     <p>Your certificate has been generated. Certificate ID: <strong>${certificateId}</strong></p>
     <p>Download your certificate from the dashboard.</p>
-    <p>Best regards,<br/>Eldohub Academy Team</p>
+    <p>Best regards,<br/>Oval Training Institute "OTI" Team</p>
   </div>
 `;

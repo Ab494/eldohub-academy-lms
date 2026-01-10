@@ -24,9 +24,9 @@ const Navbar: React.FC = () => {
   const getDashboardLink = () => {
     if (!user) return '/login';
     switch (user.role) {
-      case 'admin': return '/admin';
+      case 'admin': return '/dashboard';
       case 'instructor': return '/instructor';
-      default: return '/dashboard';
+      default: return '/student';
     }
   };
 

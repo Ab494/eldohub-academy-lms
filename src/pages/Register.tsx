@@ -14,7 +14,7 @@ const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { register } = useAuth();
+  const { register, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -28,9 +28,17 @@ const Register: React.FC = () => {
       await register(firstName.trim(), lastName.trim(), email.trim(), password);
       toast({
         title: 'Account created!',
-        description: 'Welcome to ELDOHUB Academy.',
+        description: 'Welcome to OTI Academy.',
       });
-      navigate('/dashboard');
+
+      // Redirect based on user role
+      if (user?.role === 'admin') {
+        navigate('/dashboard');
+      } else if (user?.role === 'instructor') {
+        navigate('/instructor');
+      } else {
+        navigate('/courses');
+      }
     } catch (error) {
       toast({
         title: 'Registration failed',
@@ -71,14 +79,14 @@ const Register: React.FC = () => {
               <GraduationCap className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-foreground">
-              ELDO<span className="text-primary">HUB</span>
+              OTI
             </span>
           </Link>
 
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2">Create your account</h1>
             <p className="text-muted-foreground">
-              Join the ELDOHUB community and start learning
+              Join the OTI community and start learning
             </p>
           </div>
 

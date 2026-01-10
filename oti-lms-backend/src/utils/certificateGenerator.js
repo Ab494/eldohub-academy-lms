@@ -68,7 +68,7 @@ export const generateCertificatePDF = (studentName, courseName, completionDate, 
       .fontSize(12)
       .fillColor('#333')
       .text('_________________', 80, 550)
-      .text('Eldohub Academy', 80, 570);
+      .text('Oval Training Institute "OTI"', 80, 570);
 
     doc.text('_________________', doc.page.width - 220, 550).text('Date', doc.page.width - 220, 570);
 

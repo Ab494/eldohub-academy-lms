@@ -2,7 +2,7 @@ import { EnrollmentService } from '../services/enrollmentService.js';
 import { asyncHandler } from '../utils/errorHandler.js';
 
 export const enrollCourse = asyncHandler(async (req, res) => {
-  const { courseId } = req.params;
+  const courseId = req.params.courseId || req.body.courseId;
   const enrollment = await EnrollmentService.enrollStudent(
     req.userId,
     courseId,
@@ -11,7 +11,7 @@ export const enrollCourse = asyncHandler(async (req, res) => {
   );
   res.status(201).json({
     success: true,
-    message: 'Enrolled successfully',
+    message: 'Registration successful! Await admin approval.',
     data: enrollment,
   });
 });

@@ -11,7 +11,7 @@ const startServer = async () => {
     app.listen(config.port, () => {
       console.log(`
 ╔════════════════════════════════════════╗
-║   Eldohub LMS Backend Running       ║
+║   Oval Training Institute "OTI" LMS Backend Running       ║
 ║   Port: ${config.port}                          ║
 ║   Environment: ${config.nodeEnv}         ║
 ║   URL: http://localhost:${config.port}          ║

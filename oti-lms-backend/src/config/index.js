@@ -23,7 +23,7 @@ export const config = {
     port: parseInt(process.env.EMAIL_PORT) || 587,
     user: process.env.EMAIL_USER,
     password: process.env.EMAIL_PASSWORD,
-    fromName: process.env.EMAIL_FROM_NAME || 'Eldohub Academy',
+    fromName: process.env.EMAIL_FROM_NAME || 'Oval Training Institute "OTI"',
     fromEmail: process.env.EMAIL_FROM_EMAIL || 'noreply@eldohub.com',
   },
   

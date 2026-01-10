@@ -13,7 +13,7 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -27,11 +27,19 @@ const Login: React.FC = () => {
         title: 'Welcome back!',
         description: 'You have successfully logged in.',
       });
-      navigate('/dashboard');
+
+      // Redirect based on user role
+      if (user?.role === 'admin') {
+        navigate('/dashboard');
+      } else if (user?.role === 'instructor') {
+        navigate('/instructor');
+      } else {
+        navigate('/courses');
+      }
     } catch (error) {
       toast({
         title: 'Login failed',
-        description: 'Invalid email or password. Try: student@eldohub.com / password',
+        description: 'Invalid email or password. Try: student@oti.com / password',
         variant: 'destructive',
       });
     } finally {
@@ -50,7 +58,7 @@ const Login: React.FC = () => {
               <GraduationCap className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-foreground">
-              ELDO<span className="text-primary">HUB</span>
+              OTI
             </span>
           </Link>
 
@@ -138,7 +146,7 @@ const Login: React.FC = () => {
           <div className="text-center text-primary-foreground">
             <h2 className="text-4xl font-bold mb-4">Transform Your Future</h2>
             <p className="text-lg text-primary-foreground/80 max-w-md">
-              Join thousands of learners mastering new skills and advancing their careers with ELDOHUB Academy.
+              Join thousands of learners mastering new skills and advancing their careers with OTI Academy.
             </p>
           </div>
         </div>

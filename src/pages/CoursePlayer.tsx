@@ -189,7 +189,7 @@ const CoursePlayer: React.FC = () => {
              {currentLesson ? (
                <>
                  {currentLesson.type === 'assignment' ? (
-                   // Enhanced Assignment View
+                   // Enhanced Assignment View with Questions
                    <div className="space-y-6">
                      <Card className="overflow-hidden">
                        <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
@@ -206,72 +206,109 @@ const CoursePlayer: React.FC = () => {
                        </div>
 
                        <CardContent className="p-6">
-                         {/* Meta Information */}
-                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                           <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                             <Clock className="w-5 h-5 text-primary" />
-                             <div>
-                               <p className="text-sm font-medium">Duration</p>
-                               <p className="text-sm text-muted-foreground">{currentLesson.duration || '2 hours'}</p>
+                         {/* Assignment Questions */}
+                         {currentLesson.questions && currentLesson.questions.length > 0 ? (
+                           <div className="space-y-6">
+                             <h3 className="text-lg font-semibold">Assignment Questions</h3>
+                             {currentLesson.questions.map((question, index) => (
+                               <Card key={index} className="p-4">
+                                 <div className="space-y-4">
+                                   <h4 className="font-medium">{index + 1}. {question.question}</h4>
+                                   <div className="space-y-2">
+                                     {question.options.map((option, optIndex) => (
+                                       <label key={optIndex} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer">
+                                         <input
+                                           type="radio"
+                                           name={`question-${index}`}
+                                           value={optIndex}
+                                           className="w-4 h-4 text-primary"
+                                         />
+                                         <span className="text-sm">{option}</span>
+                                       </label>
+                                     ))}
+                                   </div>
+                                 </div>
+                               </Card>
+                             ))}
+
+                             {/* Submit Button */}
+                             <div className="flex justify-end">
+                               <Button className="bg-primary hover:bg-primary/90">
+                                 <FileCheck className="w-4 h-4 mr-2" />
+                                 Submit Assignment
+                               </Button>
                              </div>
                            </div>
-                           <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                             <Calendar className="w-5 h-5 text-orange-500" />
-                             <div>
-                               <p className="text-sm font-medium">Due Date</p>
-                               <p className="text-sm text-muted-foreground">Dec 31, 2024</p>
+                         ) : (
+                           <>
+                             {/* Meta Information */}
+                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                               <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                                 <Clock className="w-5 h-5 text-primary" />
+                                 <div>
+                                   <p className="text-sm font-medium">Duration</p>
+                                   <p className="text-sm text-muted-foreground">{currentLesson.duration || '2 hours'}</p>
+                                 </div>
+                               </div>
+                               <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                                 <Calendar className="w-5 h-5 text-orange-500" />
+                                 <div>
+                                   <p className="text-sm font-medium">Due Date</p>
+                                   <p className="text-sm text-muted-foreground">Dec 31, 2024</p>
+                                 </div>
+                               </div>
+                               <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                                 <Target className="w-5 h-5 text-green-500" />
+                                 <div>
+                                   <p className="text-sm font-medium">Status</p>
+                                   <Badge variant="outline" className="text-green-600 border-green-600">
+                                     Not Started
+                                   </Badge>
+                                 </div>
+                               </div>
                              </div>
-                           </div>
-                           <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                             <Target className="w-5 h-5 text-green-500" />
-                             <div>
-                               <p className="text-sm font-medium">Status</p>
-                               <Badge variant="outline" className="text-green-600 border-green-600">
-                                 Not Started
-                               </Badge>
+
+                             {/* Assignment Overview */}
+                             <div className="mb-6">
+                               <h3 className="text-lg font-semibold mb-3">Assignment Overview</h3>
+                               <p className="text-muted-foreground mb-4">
+                                 This assignment will help you apply the concepts learned in this module.
+                                 You need to complete all the requirements and submit your work for grading.
+                               </p>
                              </div>
-                           </div>
-                         </div>
 
-                         {/* Assignment Overview */}
-                         <div className="mb-6">
-                           <h3 className="text-lg font-semibold mb-3">Assignment Overview</h3>
-                           <p className="text-muted-foreground mb-4">
-                             This assignment will help you apply the concepts learned in this module.
-                             You need to complete all the requirements and submit your work for grading.
-                           </p>
-                         </div>
+                             {/* Learning Objectives */}
+                             <div className="mb-6">
+                               <h3 className="text-lg font-semibold mb-3">Learning Objectives</h3>
+                               <ul className="space-y-2">
+                                 <li className="flex items-start gap-2">
+                                   <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                                   <span className="text-sm">Apply theoretical concepts to practical scenarios</span>
+                                 </li>
+                                 <li className="flex items-start gap-2">
+                                   <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                                   <span className="text-sm">Demonstrate problem-solving skills</span>
+                                 </li>
+                                 <li className="flex items-start gap-2">
+                                   <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                                   <span className="text-sm">Present solutions in a clear and structured manner</span>
+                                 </li>
+                               </ul>
+                             </div>
 
-                         {/* Learning Objectives */}
-                         <div className="mb-6">
-                           <h3 className="text-lg font-semibold mb-3">Learning Objectives</h3>
-                           <ul className="space-y-2">
-                             <li className="flex items-start gap-2">
-                               <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                               <span className="text-sm">Apply theoretical concepts to practical scenarios</span>
-                             </li>
-                             <li className="flex items-start gap-2">
-                               <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                               <span className="text-sm">Demonstrate problem-solving skills</span>
-                             </li>
-                             <li className="flex items-start gap-2">
-                               <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                               <span className="text-sm">Present solutions in a clear and structured manner</span>
-                             </li>
-                           </ul>
-                         </div>
-
-                         {/* Action Buttons */}
-                         <div className="flex flex-col sm:flex-row gap-3">
-                           <Button className="bg-primary hover:bg-primary/90">
-                             <FileCheck className="w-4 h-4 mr-2" />
-                             Start Assignment
-                           </Button>
-                           <Button variant="outline">
-                             <Download className="w-4 h-4 mr-2" />
-                             Download Materials
-                           </Button>
-                         </div>
+                             {/* Action Buttons */}
+                             <div className="flex flex-col sm:flex-row gap-3">
+                               <Button className="bg-primary hover:bg-primary/90">
+                                 <FileCheck className="w-4 h-4 mr-2" />
+                                 Start Assignment
+                               </Button>
+                               <Button variant="outline">
+                                 <Download className="w-4 h-4 mr-2" />
+                                 Download Materials
+                               </Button>
+                             </div>
+                           </>
+                         )}
                        </CardContent>
                      </Card>
                    </div>

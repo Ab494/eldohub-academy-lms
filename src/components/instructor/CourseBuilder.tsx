@@ -45,6 +45,7 @@ import {
 } from '@/components/ui/collapsible';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface Lesson {
   _id: string;
@@ -52,6 +53,7 @@ interface Lesson {
   type: 'video' | 'text' | 'quiz' | 'assignment';
   duration?: string;
   isPublished: boolean;
+  questions?: Array<{ question: string; options: string[]; correctAnswer: number }>;
 }
 
 interface Module {
@@ -82,6 +84,7 @@ const CourseBuilder: React.FC = () => {
     type: 'video' as 'video' | 'text' | 'quiz' | 'assignment',
     content: '',
     videoUrl: '',
+    questions: [] as Array<{ question: string; options: string[]; correctAnswer: number }>,
   });
 
   // Courses state
@@ -111,6 +114,23 @@ const CourseBuilder: React.FC = () => {
     }
   }, [courseId]);
 
+  // Load modules when a course is selected
+  useEffect(() => {
+    const loadModules = async () => {
+      if (selectedCourse) {
+        try {
+          const res = await (await import('@/lib/apiClient')).moduleAPI.getCourseModules(selectedCourse);
+          const payload = res.data || res;
+          setModules(payload || []);
+        } catch (err) {
+          console.error('Failed to load modules', err);
+        }
+      }
+    };
+
+    loadModules();
+  }, [selectedCourse]);
+
   const toggleModuleExpand = (moduleId: string) => {
     setModules(modules.map(m =>
       m._id === moduleId ? { ...m, isExpanded: !m.isExpanded } : m
@@ -134,22 +154,23 @@ const CourseBuilder: React.FC = () => {
 
   const handleAddLesson = () => {
     if (!newLessonData.title.trim() || !activeModuleId) return;
-    
+
     const newLesson: Lesson = {
       _id: `lesson-${Date.now()}`,
       title: newLessonData.title,
       type: newLessonData.type,
       duration: newLessonData.type === 'video' ? '10:00' : undefined,
       isPublished: false,
+      questions: newLessonData.type === 'assignment' ? newLessonData.questions : undefined,
     };
-    
+
     setModules(modules.map(m =>
       m._id === activeModuleId
         ? { ...m, lessons: [...m.lessons, newLesson] }
         : m
     ));
-    
-    setNewLessonData({ title: '', type: 'video', content: '', videoUrl: '' });
+
+    setNewLessonData({ title: '', type: 'video', content: '', videoUrl: '', questions: [] });
     setShowLessonDialog(false);
   };
 
@@ -198,6 +219,7 @@ const CourseBuilder: React.FC = () => {
             content: lesson.type === 'text' ? 'Sample content' : 'Sample content',
             videoUrl: lesson.type === 'video' ? 'https://example.com/video' : undefined,
             duration: lesson.duration,
+            questions: lesson.questions, // Include questions for assignments
           };
           await lessonAPI.createLesson(selectedCourse, createdModuleId, lessonData);
         }
@@ -567,6 +589,78 @@ const CourseBuilder: React.FC = () => {
                   value={newLessonData.content}
                   onChange={(e) => setNewLessonData({ ...newLessonData, content: e.target.value })}
                 />
+              </div>
+            )}
+
+            {newLessonData.type === 'assignment' && (
+              <div className="space-y-4">
+                <Label>Assignment Questions</Label>
+                {newLessonData.questions.map((q, index) => (
+                  <Card key={index} className="p-4">
+                    <div className="space-y-3">
+                      <Input
+                        placeholder="Question text"
+                        value={q.question}
+                        onChange={(e) => {
+                          const newQuestions = [...newLessonData.questions];
+                          newQuestions[index].question = e.target.value;
+                          setNewLessonData({ ...newLessonData, questions: newQuestions });
+                        }}
+                      />
+                      {q.options.map((option, optIndex) => (
+                        <div key={optIndex} className="flex gap-2">
+                          <Input
+                            placeholder={`Option ${optIndex + 1}`}
+                            value={option}
+                            onChange={(e) => {
+                              const newQuestions = [...newLessonData.questions];
+                              newQuestions[index].options[optIndex] = e.target.value;
+                              setNewLessonData({ ...newLessonData, questions: newQuestions });
+                            }}
+                          />
+                          <input
+                            type="radio"
+                            name={`correct-${index}`}
+                            checked={q.correctAnswer === optIndex}
+                            onChange={() => {
+                              const newQuestions = [...newLessonData.questions];
+                              newQuestions[index].correctAnswer = optIndex;
+                              setNewLessonData({ ...newLessonData, questions: newQuestions });
+                            }}
+                          />
+                        </div>
+                      ))}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const newQuestions = [...newLessonData.questions];
+                          newQuestions[index].options.push('');
+                          setNewLessonData({ ...newLessonData, questions: newQuestions });
+                        }}
+                      >
+                        Add Option
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setNewLessonData({
+                      ...newLessonData,
+                      questions: [...newLessonData.questions, {
+                        question: '',
+                        options: ['', ''],
+                        correctAnswer: 0
+                      }]
+                    });
+                  }}
+                >
+                  Add Question
+                </Button>
               </div>
             )}
           </div>

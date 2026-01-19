@@ -4,6 +4,8 @@ import { authenticate } from '../middlewares/auth.js';
 import {
   validateRegister,
   validateLogin,
+  validateForgotPassword,
+  validateResetPassword,
   handleValidationErrors,
 } from '../middlewares/validation.js';
 
@@ -23,6 +25,18 @@ router.post(
   authController.login
 );
 router.post('/refresh-token', authController.refreshToken);
+router.post(
+  '/forgot-password',
+  validateForgotPassword,
+  handleValidationErrors,
+  authController.forgotPassword
+);
+router.post(
+  '/reset-password',
+  validateResetPassword,
+  handleValidationErrors,
+  authController.resetPassword
+);
 
 // Protected routes
 router.get('/me', authenticate, authController.getCurrentUser);

@@ -41,6 +41,24 @@ export const validateLogin = [
     .withMessage('Password is required'),
 ];
 
+export const validateForgotPassword = [
+  body('email')
+    .trim()
+    .toLowerCase()
+    .isEmail()
+    .withMessage('Invalid email format')
+    .normalizeEmail(),
+];
+
+export const validateResetPassword = [
+  body('token')
+    .notEmpty()
+    .withMessage('Reset token is required'),
+  body('newPassword')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters'),
+];
+
 export const validateCreateCourse = [
   body('title')
     .trim()

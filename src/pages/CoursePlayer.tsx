@@ -8,6 +8,7 @@ import {
   Home,
   ChevronRight,
   ChevronLeft,
+  CheckCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -82,9 +83,10 @@ const CoursePlayer: React.FC = () => {
             0
           );
 
-          // TODO: fetch real progress from backend
-          const completedCount = 0;
-          const completed = new Set<string>();
+          // Restore completed lessons from localStorage
+          const storedCompleted: string[] = JSON.parse(localStorage.getItem(`course-completed-${courseId}`) || '[]');
+          const completed = new Set<string>(storedCompleted);
+          const completedCount = completed.size;
           const percentage = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
 
           setCompletedLessons(completed);
@@ -145,6 +147,60 @@ const CoursePlayer: React.FC = () => {
       }
     }
   };
+  const handleMarkComplete = useCallback(() => {
+    if (!currentLesson) return;
+    const lessonId = currentLesson._id;
+
+    // Update completed set
+    setCompletedLessons((prev) => {
+      const next = new Set(prev);
+      next.add(lessonId);
+      return next;
+    });
+
+    // Remove from in-progress
+    setInProgressLessons((prev) => {
+      const next = new Set(prev);
+      next.delete(lessonId);
+      return next;
+    });
+
+    // Update progress
+    setProgress((prev) => {
+      const newCompleted = prev.completed + 1;
+      return {
+        completed: newCompleted,
+        total: prev.total,
+        percentage: prev.total > 0 ? Math.round((newCompleted / prev.total) * 100) : 0,
+      };
+    });
+
+    // Persist to localStorage
+    if (courseId) {
+      const key = `course-completed-${courseId}`;
+      const stored = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!stored.includes(lessonId)) {
+        stored.push(lessonId);
+        localStorage.setItem(key, JSON.stringify(stored));
+      }
+    }
+
+    toast({ title: 'Lesson completed!', description: 'Great progress — keep it up!' });
+
+    // Auto-advance to next lesson
+    const allLessons = getAllLessons(modules);
+    const currentIndex = allLessons.findIndex((l: any) => l._id === lessonId);
+    const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
+    if (nextLesson) {
+      setCurrentLesson(nextLesson);
+      const parentModule = modules.find((m: any) =>
+        (m.lessons || []).some((l: any) => l._id === nextLesson._id)
+      );
+      if (parentModule && !expandedModules.includes(parentModule._id)) {
+        setExpandedModules((prev) => [...prev, parentModule._id]);
+      }
+    }
+  }, [currentLesson, courseId, modules, expandedModules, getAllLessons, toast]);
 
   const totalLessons = modules.reduce((acc: number, m: any) => acc + (m.lessons?.length || 0), 0);
 
@@ -225,15 +281,32 @@ const CoursePlayer: React.FC = () => {
               {/* Lesson detail */}
               <LessonContent lesson={currentLesson} />
 
-              {/* Next/Previous navigation */}
+              {/* Mark Complete + Navigation */}
               {(() => {
                 const allLessons = getAllLessons(modules);
                 const currentIndex = allLessons.findIndex((l: any) => l._id === currentLesson._id);
                 const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
                 const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
+                const isCompleted = completedLessons.has(currentLesson._id);
 
                 return (
-                  <div className="px-6 lg:px-8 pb-6 flex items-center justify-between gap-4">
+                  <div className="px-6 lg:px-8 pb-6 space-y-4">
+                    {/* Mark as Complete */}
+                    <div className="flex justify-center">
+                      <Button
+                        variant={isCompleted ? 'outline' : 'success'}
+                        size="lg"
+                        disabled={isCompleted}
+                        onClick={handleMarkComplete}
+                        className="w-full sm:w-auto"
+                      >
+                        <CheckCircle className="w-5 h-5 mr-2" />
+                        {isCompleted ? 'Completed' : 'Mark as Complete & Continue'}
+                      </Button>
+                    </div>
+
+                    {/* Prev / Next */}
+                    <div className="flex items-center justify-between gap-4">
                     {prevLesson ? (
                       <Button
                         variant="outline"
@@ -266,6 +339,7 @@ const CoursePlayer: React.FC = () => {
                     ) : (
                       <div />
                     )}
+                    </div>
                   </div>
                 );
               })()}

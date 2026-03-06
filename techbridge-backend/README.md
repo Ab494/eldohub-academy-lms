@@ -1,4 +1,4 @@
-# Oval Training Institute "OTI" LMS Backend
+# TechBridge Academy LMS Backend
 
 A production-ready Learning Management System (LMS) backend built with Node.js, Express, and MongoDB.
 
@@ -468,4 +468,4 @@ Contributions welcome! Please submit pull requests with:
 
 ---
 
-**Built with ❤️ for the Oval Training Institute "OTI"**
+**Built with ❤️ for the TechBridge Academy**

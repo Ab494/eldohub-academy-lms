@@ -1,6 +1,6 @@
-# Oval Training Institute "OTI" LMS - Complete Documentation Index
+# TechBridge Academy LMS - Complete Documentation Index
 
-Welcome! This is your guide to the Oval Training Institute "OTI" Learning Management System (LMS) backend and its integration with your React frontend.
+Welcome! This is your guide to the TechBridge Academy Learning Management System (LMS) backend and its integration with your React frontend.
 
 ## Quick Navigation
 

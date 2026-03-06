@@ -86,7 +86,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ collapsed, onToggle
             </div>
             {!collapsed && (
               <span className="text-lg font-bold text-sidebar-foreground">
-                ELDO<span className="text-sidebar-primary">HUB</span>
+                Tech<span className="text-sidebar-primary">Bridge</span>
               </span>
             )}
           </Link>

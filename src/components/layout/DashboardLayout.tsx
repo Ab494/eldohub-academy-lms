@@ -4,7 +4,7 @@ import { useAuth } from '@/store/AuthContext';
 import DashboardSidebar from './DashboardSidebar';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
-
+// DashboardLayout component that manages authentication and layout structure
 const DashboardLayout: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

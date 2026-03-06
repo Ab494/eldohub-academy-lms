@@ -28,7 +28,7 @@ const Register: React.FC = () => {
       await register(firstName.trim(), lastName.trim(), email.trim(), password);
       toast({
         title: 'Account created!',
-        description: 'Welcome to OTI Academy.',
+        description: 'Welcome to TechBridge Academy.',
       });
 
       // Redirect based on user role
@@ -79,14 +79,14 @@ const Register: React.FC = () => {
               <GraduationCap className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-foreground">
-              OTI
+              TechBridge
             </span>
           </Link>
 
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-2">Create your account</h1>
             <p className="text-muted-foreground">
-              Join the OTI community and start learning
+              Join the TechBridge community and start learning
             </p>
           </div>
 

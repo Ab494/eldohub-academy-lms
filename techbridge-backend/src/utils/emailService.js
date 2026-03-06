@@ -35,7 +35,7 @@ export const enrollmentEmailTemplate = (studentName, courseName) => `
     <h2>Welcome to ${courseName}!</h2>
     <p>Hi ${studentName},</p>
     <p>You have successfully enrolled in <strong>${courseName}</strong>. You can now access all course materials and lessons.</p>
-    <p>Best regards,<br/>Oval Training Institute "OTI" Team</p>
+    <p>Best regards,<br/>TechBridge Academy Team</p>
   </div>
 `;
 
@@ -46,7 +46,7 @@ export const assignmentGradeEmailTemplate = (studentName, courseName, assignment
     <p>Your assignment for <strong>${courseName}</strong> has been graded.</p>
     <p><strong>Grade:</strong> ${grade}%</p>
     <p><strong>Feedback:</strong> ${feedback}</p>
-    <p>Best regards,<br/>Oval Training Institute "OTI" Team</p>
+    <p>Best regards,<br/>TechBridge Academy Team</p>
   </div>
 `;
 
@@ -54,13 +54,13 @@ export const forgotPasswordEmailTemplate = (userName, resetUrl) => `
   <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
     <h2>Reset Your Password</h2>
     <p>Hi ${userName},</p>
-    <p>You requested to reset your password for your OTI account. Click the button below to reset your password:</p>
+    <p>You requested to reset your password for your TechBridge account. Click the button below to reset your password:</p>
     <div style="text-align: center; margin: 30px 0;">
       <a href="${resetUrl}" style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
     </div>
     <p>This link will expire in 1 hour for security reasons.</p>
     <p>If you didn't request this password reset, please ignore this email.</p>
-    <p>Best regards,<br/>Oval Training Institute "OTI" Team</p>
+    <p>Best regards,<br/>TechBridge Academy Team</p>
   </div>
 `;
 
@@ -71,6 +71,6 @@ export const courseCompletionEmailTemplate = (studentName, courseName, certifica
     <p>You have successfully completed <strong>${courseName}</strong>!</p>
     <p>Your certificate has been generated. Certificate ID: <strong>${certificateId}</strong></p>
     <p>Download your certificate from the dashboard.</p>
-    <p>Best regards,<br/>Oval Training Institute "OTI" Team</p>
+    <p>Best regards,<br/>TechBridge Academy Team</p>
   </div>
 `;

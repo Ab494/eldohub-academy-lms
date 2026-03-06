@@ -1,4 +1,4 @@
-# Oval Training Institute "OTI" LMS Backend - API Documentation
+# TechBridge Academy LMS Backend - API Documentation
 
 ## Base URL
 ```

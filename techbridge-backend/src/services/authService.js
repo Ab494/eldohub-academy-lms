@@ -165,7 +165,7 @@ export class AuthService {
     try {
       await sendEmail(
         user.email,
-        'Password Reset Request - OTI',
+        'Password Reset Request - TechBridge',
         forgotPasswordEmailTemplate(userName, resetUrl)
       );
       console.log('✅ Password reset email sent to:', user.email);

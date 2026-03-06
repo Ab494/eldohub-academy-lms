@@ -79,7 +79,7 @@ const ResetPassword: React.FC = () => {
               <div className="w-10 h-10 rounded-xl gradient-hero flex items-center justify-center">
                 <GraduationCap className="w-6 h-6 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold text-foreground">OTI</span>
+              <span className="text-xl font-bold text-foreground">TechBridge</span>
             </Link>
 
             <div className="text-center">
@@ -122,7 +122,7 @@ const ResetPassword: React.FC = () => {
               <div className="w-10 h-10 rounded-xl gradient-hero flex items-center justify-center">
                 <GraduationCap className="w-6 h-6 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold text-foreground">OTI</span>
+              <span className="text-xl font-bold text-foreground">TechBridge</span>
             </Link>
 
             <div className="text-center">
@@ -158,7 +158,7 @@ const ResetPassword: React.FC = () => {
             <div className="w-10 h-10 rounded-xl gradient-hero flex items-center justify-center">
               <GraduationCap className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-foreground">OTI</span>
+            <span className="text-xl font-bold text-foreground">TechBridge</span>
           </Link>
 
           <div className="mb-8">

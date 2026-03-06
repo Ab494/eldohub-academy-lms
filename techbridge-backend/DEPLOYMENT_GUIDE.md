@@ -1,4 +1,4 @@
-# Oval Training Institute "OTI" LMS Backend - Deployment Guide
+# TechBridge Academy LMS Backend - Deployment Guide
 
 ## Prerequisites
 - Node.js 18+ LTS
@@ -45,7 +45,7 @@ EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=your-email@gmail.com
 EMAIL_PASSWORD=your-app-password
-EMAIL_FROM_NAME=Oval Training Institute "OTI"
+EMAIL_FROM_NAME=TechBridge Academy
 EMAIL_FROM_EMAIL=noreply@eldohub.com
 
 # Cloudinary

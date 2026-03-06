@@ -58,7 +58,7 @@ const Login: React.FC = () => {
               <GraduationCap className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-foreground">
-              OTI
+              TechBridge
             </span>
           </Link>
 
@@ -146,7 +146,7 @@ const Login: React.FC = () => {
           <div className="text-center text-primary-foreground">
             <h2 className="text-4xl font-bold mb-4">Transform Your Future</h2>
             <p className="text-lg text-primary-foreground/80 max-w-md">
-              Join thousands of learners mastering new skills and advancing their careers with OTI Academy.
+              Join thousands of learners mastering new skills and advancing their careers with TechBridge Academy.
             </p>
           </div>
         </div>

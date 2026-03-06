@@ -11,7 +11,7 @@ const startServer = async () => {
     app.listen(config.port, () => {
       console.log(`
 ╔════════════════════════════════════════╗
-║   Oval Training Institute "OTI" LMS Backend Running       ║
+║   TechBridge Academy LMS Backend Running       ║
 ║   Port: ${config.port}                          ║
 ║   Environment: ${config.nodeEnv}         ║
 ║   URL: http://localhost:${config.port}          ║

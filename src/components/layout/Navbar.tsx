@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
               <GraduationCap className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-foreground">
-              ELDO<span className="text-primary">HUB</span>
+              Tech<span className="text-primary">Bridge</span>
             </span>
           </Link>
 

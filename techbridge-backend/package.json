@@ -1,7 +1,7 @@
 {
-  "name": "eldohub-lms-backend",
+  "name": "techbridge-academy-lms-backend",
   "version": "1.0.0",
-  "description": "Production-ready Learning Management System backend",
+  "description": "TechBridge Academy Learning Management System backend",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
@@ -16,7 +16,7 @@
     "mern",
     "education"
   ],
-  "author": "Oval Training Institute \"OTI\"",
+  "author": "TechBridge Academy",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.1",

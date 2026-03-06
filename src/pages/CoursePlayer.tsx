@@ -2,10 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   ArrowLeft,
+  ArrowRight,
   Play,
   Download,
   Home,
   ChevronRight,
+  ChevronLeft,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -222,6 +224,51 @@ const CoursePlayer: React.FC = () => {
 
               {/* Lesson detail */}
               <LessonContent lesson={currentLesson} />
+
+              {/* Next/Previous navigation */}
+              {(() => {
+                const allLessons = getAllLessons(modules);
+                const currentIndex = allLessons.findIndex((l: any) => l._id === currentLesson._id);
+                const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
+                const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
+
+                return (
+                  <div className="px-6 lg:px-8 pb-6 flex items-center justify-between gap-4">
+                    {prevLesson ? (
+                      <Button
+                        variant="outline"
+                        onClick={() => setCurrentLesson(prevLesson)}
+                        className="flex items-center gap-2"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        <div className="text-left hidden sm:block">
+                          <div className="text-xs text-muted-foreground">Previous</div>
+                          <div className="text-sm font-medium truncate max-w-[180px]">{prevLesson.title}</div>
+                        </div>
+                        <span className="sm:hidden text-sm">Previous</span>
+                      </Button>
+                    ) : (
+                      <div />
+                    )}
+                    {nextLesson ? (
+                      <Button
+                        variant="hero"
+                        onClick={() => setCurrentLesson(nextLesson)}
+                        className="flex items-center gap-2"
+                      >
+                        <div className="text-left hidden sm:block">
+                          <div className="text-xs opacity-80">Next</div>
+                          <div className="text-sm font-medium truncate max-w-[180px]">{nextLesson.title}</div>
+                        </div>
+                        <span className="sm:hidden text-sm">Next</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </Button>
+                    ) : (
+                      <div />
+                    )}
+                  </div>
+                );
+              })()}
             </>
           ) : (
             <CourseWelcome

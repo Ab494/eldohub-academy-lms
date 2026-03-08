@@ -3,6 +3,7 @@ import { Outlet, Navigate } from 'react-router-dom';
 import { useAuth } from '@/store/AuthContext';
 import DashboardSidebar from './DashboardSidebar';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import ThemeToggle from '@/components/ThemeToggle';
 import { cn } from '@/lib/utils';
 import { Loader2, Menu, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -49,7 +50,10 @@ const DashboardLayout: React.FC = () => {
             </span>
           </Link>
         </div>
-        <NotificationBell />
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <NotificationBell />
+        </div>
       </header>
 
       {/* Desktop top bar (notification bell) */}
@@ -59,7 +63,10 @@ const DashboardLayout: React.FC = () => {
           sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
         )}
       >
-        <NotificationBell />
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <NotificationBell />
+        </div>
       </div>
 
       <main 

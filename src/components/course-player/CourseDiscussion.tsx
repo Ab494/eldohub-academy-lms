@@ -184,8 +184,12 @@ const CourseDiscussion: React.FC<CourseDiscussionProps> = ({ courseId }) => {
       ) : posts.length === 0 ? (
         <div className="text-center py-12">
           <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-          <p className="text-muted-foreground font-medium">No discussions yet</p>
-          <p className="text-sm text-muted-foreground mt-1">Be the first to start a conversation!</p>
+          <p className="text-muted-foreground font-medium">
+            {activeSearch ? 'No posts match your search' : 'No discussions yet'}
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {activeSearch ? 'Try different keywords' : 'Be the first to start a conversation!'}
+          </p>
         </div>
       ) : (
         <div className="space-y-4">

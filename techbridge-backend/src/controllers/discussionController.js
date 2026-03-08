@@ -75,8 +75,9 @@ export const createPost = asyncHandler(async (req, res) => {
 
     // Send email to original post author (async, non-blocking)
     try {
-      const parentPost = await DiscussionPost.findById(parentPostId).populate('author', 'firstName lastName email');
-      if (parentPost && parentPost.author && parentPost.author.email && parentPost.author._id.toString() !== req.userId) {
+      const parentPost = await DiscussionPost.findById(parentPostId).populate('author', 'firstName lastName email emailNotifications');
+      if (parentPost && parentPost.author && parentPost.author.email && parentPost.author._id.toString() !== req.userId
+          && parentPost.author.emailNotifications?.discussionReplies !== false) {
         const replier = await User.findById(req.userId).select('firstName lastName');
         const course = await Course.findById(courseId).select('title');
         const replierName = replier ? `${replier.firstName} ${replier.lastName}`.trim() : 'Someone';

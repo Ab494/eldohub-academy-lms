@@ -13,6 +13,9 @@ export interface User {
   phone?: string;
   bio?: string;
   isEmailVerified?: boolean;
+  emailNotifications?: {
+    discussionReplies?: boolean;
+  };
 }
 
 interface AuthContextType {

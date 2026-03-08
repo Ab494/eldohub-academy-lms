@@ -390,7 +390,7 @@ const CoursePlayer: React.FC = () => {
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    className="flex-1"
+                    className="flex-1 max-w-4xl mx-auto w-full"
                   >
                     <LessonContent lesson={currentLesson} />
 

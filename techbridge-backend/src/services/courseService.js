@@ -35,6 +35,7 @@ export class CourseService {
       'price',
       'level',
       'tags',
+      'prerequisites',
     ];
     allowedFields.forEach(field => {
       if (updateData[field] !== undefined) {

@@ -30,6 +30,20 @@ const Settings: React.FC = () => {
   const [savingPassword, setSavingPassword] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user?.avatar || null);
+  const [discussionReplies, setDiscussionReplies] = useState(user?.emailNotifications?.discussionReplies !== false);
+  const [savingNotifications, setSavingNotifications] = useState(false);
+
+  const handleNotificationsSave = async () => {
+    try {
+      setSavingNotifications(true);
+      await updateProfile({ emailNotifications: { discussionReplies } } as any);
+      toast({ title: 'Success', description: 'Notification preferences saved' });
+    } catch {
+      toast({ title: 'Error', description: 'Failed to save preferences', variant: 'destructive' });
+    } finally {
+      setSavingNotifications(false);
+    }
+  };
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();

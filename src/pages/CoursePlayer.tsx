@@ -33,12 +33,6 @@ const lessonVariants = {
   exit: { opacity: 0, y: -15, transition: { duration: 0.2 } },
 };
 
-const mediaVariants = {
-  initial: { opacity: 0, scale: 0.97 },
-  animate: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: 'easeOut' as const } },
-  exit: { opacity: 0, scale: 1.02, transition: { duration: 0.2 } },
-};
-
 const tabVariants = {
   initial: { opacity: 0, x: 10 },
   animate: { opacity: 1, x: 0, transition: { duration: 0.25 } },
@@ -176,8 +170,6 @@ const CoursePlayer: React.FC = () => {
   };
 
   const totalLessons = modules.reduce((acc: number, m: any) => acc + (m.lessons?.length || 0), 0);
-
-  // Current lesson index info
   const allLessons = getAllLessons(modules);
   const currentIndex = currentLesson ? allLessons.findIndex((l: any) => l._id === currentLesson._id) : -1;
   const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
@@ -201,10 +193,9 @@ const CoursePlayer: React.FC = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Compact sticky header */}
-      <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border">
-        <div className="px-4 lg:px-6 py-3">
+      <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-sm">
+        <div className="px-4 lg:px-6 py-2.5">
           <div className="flex items-center justify-between gap-4">
-            {/* Left: breadcrumb + title */}
             <div className="flex items-center gap-3 min-w-0">
               <Button
                 variant="ghost"
@@ -215,30 +206,19 @@ const CoursePlayer: React.FC = () => {
                 {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </Button>
               <div className="min-w-0">
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-0.5">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Link to="/dashboard/courses" className="hover:text-foreground transition-colors flex items-center gap-1">
                     <Home className="w-3 h-3" /> My Courses
                   </Link>
                   <ChevronRight className="w-3 h-3" />
-                  <span className="text-foreground font-medium truncate">{course?.title}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-sm lg:text-base font-bold text-foreground truncate">
-                    {currentLesson ? currentLesson.title : course?.title}
-                  </h1>
-                  {currentLesson && (
-                    <Badge variant="outline" className="text-[10px] capitalize shrink-0 hidden sm:inline-flex">
-                      {currentLesson.type}
-                    </Badge>
-                  )}
+                  <span className="text-foreground/70 truncate max-w-[200px]">{course?.title}</span>
                 </div>
               </div>
             </div>
 
-            {/* Right: progress + actions */}
             <div className="flex items-center gap-3 shrink-0">
-              <div className="hidden md:flex items-center gap-2.5 bg-muted/50 rounded-full px-3 py-1.5">
-                <div className="w-24">
+              <div className="hidden md:flex items-center gap-2.5 bg-muted/60 rounded-full px-3 py-1.5">
+                <div className="w-20">
                   <Progress value={progress.percentage} className="h-1.5" />
                 </div>
                 <span className="text-xs font-bold text-foreground tabular-nums">{progress.percentage}%</span>
@@ -248,7 +228,7 @@ const CoursePlayer: React.FC = () => {
                   <Trophy className="w-3 h-3" /> Complete
                 </Badge>
               )}
-              <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8">
                 <Download className="w-3.5 h-3.5" /> Resources
               </Button>
             </div>
@@ -266,120 +246,93 @@ const CoursePlayer: React.FC = () => {
         <div className="flex-1 flex flex-col min-w-0">
           {currentLesson ? (
             <>
-              {/* Video / Media Area */}
-              <div className="relative aspect-[21/9] max-h-[400px] bg-secondary overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-t from-secondary via-transparent to-secondary/30 z-[1] pointer-events-none" />
-                
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentLesson._id + '-media'}
-                    variants={mediaVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    className="absolute inset-0"
-                  >
-                    {currentLesson.type === 'video' && currentLesson.videoUrl ? (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <a
-                          href={currentLesson.videoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="relative z-10 flex flex-col items-center gap-3 group/play"
-                        >
-                          <motion.div
-                            className="w-20 h-20 rounded-full gradient-hero flex items-center justify-center shadow-glow"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <Play className="w-8 h-8 text-primary-foreground ml-1" />
-                          </motion.div>
-                          <span className="text-secondary-foreground/80 text-sm font-medium">Click to play video</span>
-                        </a>
+              {/* Lesson title bar with type indicator */}
+              <div className="bg-card border-b border-border">
+                <div className="max-w-4xl mx-auto w-full px-4 lg:px-8 py-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={cn(
+                        'w-10 h-10 rounded-xl flex items-center justify-center shrink-0',
+                        currentLesson.type === 'video' 
+                          ? 'bg-primary/10' 
+                          : currentLesson.type === 'assignment'
+                          ? 'bg-accent/10'
+                          : 'bg-secondary/10'
+                      )}>
+                        {currentLesson.type === 'video' ? (
+                          <Play className="w-5 h-5 text-primary" />
+                        ) : currentLesson.type === 'assignment' ? (
+                          <Zap className="w-5 h-5 text-accent" />
+                        ) : (
+                          <BookOpen className="w-5 h-5 text-secondary" />
+                        )}
                       </div>
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center">
-                          <motion.div
-                            className="w-20 h-20 rounded-2xl bg-muted/20 backdrop-blur flex items-center justify-center mx-auto mb-4 border border-muted/30"
-                            initial={{ rotate: -5, scale: 0.9 }}
-                            animate={{ rotate: 0, scale: 1 }}
-                            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                          >
-                            {currentLesson.type === 'video' ? (
-                              <Play className="w-8 h-8 text-primary" />
-                            ) : currentLesson.type === 'assignment' ? (
-                              <Zap className="w-8 h-8 text-primary" />
-                            ) : (
-                              <BookOpen className="w-8 h-8 text-primary" />
-                            )}
-                          </motion.div>
-                          <p className="text-secondary-foreground font-semibold text-lg">{currentLesson.title}</p>
-                          <p className="text-secondary-foreground/50 text-sm mt-1 capitalize">{currentLesson.type} Lesson</p>
+                      <div className="min-w-0">
+                        <h1 className="text-lg font-bold text-foreground truncate">
+                          {currentLesson.title}
+                        </h1>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <Badge variant="outline" className="text-[10px] capitalize h-5">
+                            {currentLesson.type}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">
+                            Lesson {currentIndex + 1} of {allLessons.length}
+                          </span>
                         </div>
                       </div>
-                    )}
-                  </motion.div>
-                </AnimatePresence>
+                    </div>
 
-                {/* Lesson counter badge */}
-                <div className="absolute top-4 left-4 z-10">
-                  <Badge className="bg-secondary/80 backdrop-blur text-secondary-foreground border-0 text-xs font-medium">
-                    Lesson {currentIndex + 1} of {allLessons.length}
-                  </Badge>
-                </div>
-
-                {/* Quick nav arrows */}
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                  {prevLesson && (
-                    <motion.button
-                      onClick={() => setCurrentLesson(prevLesson)}
-                      className="w-10 h-10 rounded-full bg-foreground/20 backdrop-blur hover:bg-foreground/30 flex items-center justify-center"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <ChevronLeft className="w-5 h-5 text-secondary-foreground" />
-                    </motion.button>
-                  )}
-                </div>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                  {nextLesson && (
-                    <motion.button
-                      onClick={() => setCurrentLesson(nextLesson)}
-                      className="w-10 h-10 rounded-full bg-foreground/20 backdrop-blur hover:bg-foreground/30 flex items-center justify-center"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <ChevronRight className="w-5 h-5 text-secondary-foreground" />
-                    </motion.button>
-                  )}
+                    {/* Quick nav */}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        disabled={!prevLesson}
+                        onClick={() => prevLesson && setCurrentLesson(prevLesson)}
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        disabled={!nextLesson}
+                        onClick={() => nextLesson && setCurrentLesson(nextLesson)}
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Tab bar */}
-              <div className="flex border-b border-border bg-card px-4 lg:px-8">
-                <button
-                  onClick={() => setActiveTab('content')}
-                  className={cn(
-                    'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px',
-                    activeTab === 'content'
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-muted-foreground hover:text-foreground'
-                  )}
-                >
-                  <BookOpen className="w-4 h-4" /> Lesson
-                </button>
-                <button
-                  onClick={() => setActiveTab('discussion')}
-                  className={cn(
-                    'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px',
-                    activeTab === 'discussion'
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-muted-foreground hover:text-foreground'
-                  )}
-                >
-                  <MessageSquare className="w-4 h-4" /> Discussion
-                </button>
+              <div className="border-b border-border bg-card/50">
+                <div className="max-w-4xl mx-auto w-full px-4 lg:px-8 flex">
+                  <button
+                    onClick={() => setActiveTab('content')}
+                    className={cn(
+                      'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px',
+                      activeTab === 'content'
+                        ? 'border-primary text-primary'
+                        : 'border-transparent text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    <BookOpen className="w-4 h-4" /> Lesson
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('discussion')}
+                    className={cn(
+                      'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px',
+                      activeTab === 'discussion'
+                        ? 'border-primary text-primary'
+                        : 'border-transparent text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    <MessageSquare className="w-4 h-4" /> Discussion
+                  </button>
+                </div>
               </div>
 
               <AnimatePresence mode="wait">
@@ -397,7 +350,7 @@ const CoursePlayer: React.FC = () => {
                     {/* Action bar */}
                     <div className="px-4 lg:px-8 pb-8">
                       {/* Mark complete */}
-                      <div className="flex justify-center mb-6">
+                      <div className="flex justify-center mb-8">
                         <motion.div whileHover={{ scale: isCompleted ? 1 : 1.02 }} whileTap={{ scale: isCompleted ? 1 : 0.98 }}>
                           <Button
                             variant={isCompleted ? 'outline' : 'default'}
@@ -405,7 +358,7 @@ const CoursePlayer: React.FC = () => {
                             disabled={isCompleted}
                             onClick={handleMarkComplete}
                             className={cn(
-                              'w-full sm:w-auto gap-2 font-semibold transition-all',
+                              'gap-2 font-semibold transition-all px-8',
                               !isCompleted && 'gradient-success text-accent-foreground shadow-md hover:shadow-lg'
                             )}
                           >
@@ -415,35 +368,31 @@ const CoursePlayer: React.FC = () => {
                         </motion.div>
                       </div>
 
-                      {/* Prev / Next */}
-                      <div className="flex items-center justify-between gap-3">
+                      {/* Prev / Next cards */}
+                      <div className="grid grid-cols-2 gap-3">
                         {prevLesson ? (
-                          <Button
-                            variant="ghost"
+                          <button
                             onClick={() => setCurrentLesson(prevLesson)}
-                            className="gap-2 text-muted-foreground hover:text-foreground"
+                            className="flex items-center gap-3 p-3 rounded-xl border border-border hover:border-primary/30 hover:bg-muted/30 transition-all text-left group"
                           >
-                            <ChevronLeft className="w-4 h-4" />
-                            <div className="text-left hidden sm:block">
-                              <div className="text-[10px] uppercase tracking-wider opacity-60">Previous</div>
-                              <div className="text-sm font-medium truncate max-w-[180px]">{prevLesson.title}</div>
+                            <ChevronLeft className="w-4 h-4 text-muted-foreground group-hover:text-primary shrink-0" />
+                            <div className="min-w-0">
+                              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Previous</div>
+                              <div className="text-sm font-medium text-foreground truncate">{prevLesson.title}</div>
                             </div>
-                            <span className="sm:hidden text-sm">Previous</span>
-                          </Button>
+                          </button>
                         ) : <div />}
                         {nextLesson ? (
-                          <Button
-                            variant="ghost"
+                          <button
                             onClick={() => setCurrentLesson(nextLesson)}
-                            className="gap-2 text-muted-foreground hover:text-foreground"
+                            className="flex items-center justify-end gap-3 p-3 rounded-xl border border-border hover:border-primary/30 hover:bg-muted/30 transition-all text-right group"
                           >
-                            <div className="text-right hidden sm:block">
-                              <div className="text-[10px] uppercase tracking-wider opacity-60">Next</div>
-                              <div className="text-sm font-medium truncate max-w-[180px]">{nextLesson.title}</div>
+                            <div className="min-w-0">
+                              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-0.5">Next</div>
+                              <div className="text-sm font-medium text-foreground truncate">{nextLesson.title}</div>
                             </div>
-                            <span className="sm:hidden text-sm">Next</span>
-                            <ArrowRight className="w-4 h-4" />
-                          </Button>
+                            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary shrink-0" />
+                          </button>
                         ) : <div />}
                       </div>
                     </div>
@@ -455,7 +404,7 @@ const CoursePlayer: React.FC = () => {
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    className="flex-1 px-4 lg:px-8 py-6"
+                    className="flex-1 max-w-4xl mx-auto w-full px-4 lg:px-8 py-6"
                   >
                     {courseId && <CourseDiscussion courseId={courseId} />}
                   </motion.div>
@@ -475,7 +424,7 @@ const CoursePlayer: React.FC = () => {
 
         {/* Sidebar */}
         <div className={cn(
-          'fixed top-0 right-0 bottom-0 z-50 w-80 lg:w-[380px] lg:static lg:z-auto transition-transform duration-300',
+          'fixed top-0 right-0 bottom-0 z-50 w-80 lg:w-[340px] lg:static lg:z-auto transition-transform duration-300',
           sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'
         )}>
           <CoursePlayerSidebar

@@ -1,5 +1,5 @@
 import { CourseService } from '../services/courseService.js';
-import { asyncHandler } from '../utils/errorHandler.js';
+import { asyncHandler, AppError } from '../utils/errorHandler.js';
 
 export const createCourse = asyncHandler(async (req, res) => {
   const course = await CourseService.createCourse(req.body, req.userId);

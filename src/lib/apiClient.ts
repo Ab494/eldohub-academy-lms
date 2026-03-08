@@ -172,6 +172,7 @@ export const courseAPI = {
   updateCourse: (courseId: string, data: any) => apiClient.put(`/courses/${courseId}`, data),
   publishCourse: (courseId: string) => apiClient.post(`/courses/${courseId}/publish`, {}),
   deleteCourse: (courseId: string) => apiClient.delete(`/courses/${courseId}`),
+  uploadThumbnail: (courseId: string, file: File) => apiClient.uploadFile(`/courses/${courseId}/thumbnail`, file, 'thumbnail'),
   getInstructorCourses: (params: Record<string, any> = {}) =>
     apiClient.get(`/courses/instructor/my-courses?${new URLSearchParams(params)}`),
 };

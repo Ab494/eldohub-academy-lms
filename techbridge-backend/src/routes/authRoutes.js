@@ -1,6 +1,8 @@
 import express from 'express';
 import * as authController from '../controllers/authController.js';
+import * as uploadController from '../controllers/uploadController.js';
 import { authenticate } from '../middlewares/auth.js';
+import { uploadAvatar } from '../middlewares/upload.js';
 import {
   validateRegister,
   validateLogin,
@@ -43,5 +45,6 @@ router.get('/me', authenticate, authController.getCurrentUser);
 router.post('/logout', authenticate, authController.logout);
 router.put('/profile', authenticate, authController.updateProfile);
 router.post('/change-password', authenticate, authController.changePassword);
+router.post('/avatar', authenticate, uploadAvatar, uploadController.uploadAvatar);
 
 export default router;

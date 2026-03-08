@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { User, Mail, Phone, Lock, Save, Loader2, Camera, Upload } from 'lucide-react';
+import { User, Mail, Phone, Lock, Save, Loader2, Camera, Upload, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/store/AuthContext';
 import { authAPI } from '@/lib/apiClient';
 import { useToast } from '@/hooks/use-toast';
+import { Switch } from '@/components/ui/switch';
 
 const Settings: React.FC = () => {
   const { user, updateProfile } = useAuth();

@@ -168,8 +168,7 @@ const FeaturedCoursesSection: React.FC = () => {
                     </Button>
                   </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
             ))}
           </div>
         )}

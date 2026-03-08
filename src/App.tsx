@@ -27,6 +27,7 @@ import EnrollmentRequests from "./components/admin/EnrollmentRequests";
 import CoursePlayer from "./pages/CoursePlayer";
 import Courses from "./pages/Courses";
 import Settings from "./pages/dashboard/Settings";
+import Help from "./pages/dashboard/Help";
 
 const queryClient = new QueryClient();
 
@@ -95,7 +96,7 @@ const App = () => (
               <Route index element={<Settings />} />
             </Route>
             <Route path="/help" element={<DashboardLayout />}>
-              <Route index element={<Settings />} />
+              <Route index element={<Help />} />
             </Route>
 
             {/* Catch All */}

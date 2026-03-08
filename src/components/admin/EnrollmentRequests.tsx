@@ -156,29 +156,29 @@ const EnrollmentRequests: React.FC<EnrollmentRequestsProps> = ({
         ) : (
           <div className="space-y-4">
             {requests.map((request) => (
-              <div key={request._id} className="border border-border rounded-lg p-4">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <User className="w-4 h-4 text-muted-foreground" />
+              <div key={request._id} className="border border-border rounded-lg p-3 sm:p-4">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <User className="w-4 h-4 text-muted-foreground shrink-0" />
                       <span className="font-medium text-foreground">
                         {request.student.firstName} {request.student.lastName}
                       </span>
-                      <span className="text-sm text-muted-foreground">
-                        ({request.student.email})
-                      </span>
                     </div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <BookOpen className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-medium text-foreground">{request.course.title}</span>
+                    <p className="text-sm text-muted-foreground truncate pl-6 mb-2">
+                      {request.student.email}
+                    </p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <BookOpen className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <span className="font-medium text-foreground text-sm sm:text-base">{request.course.title}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground pl-6">
                       <span>Instructor: {request.course.instructor.firstName} {request.course.instructor.lastName}</span>
-                      <span>•</span>
+                      <span className="hidden sm:inline">•</span>
                       <span>Requested: {new Date(request.enrollmentDate).toLocaleDateString()}</span>
                     </div>
                   </div>
-                  <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
+                  <Badge className="bg-yellow-100 text-yellow-800 self-start shrink-0">Pending</Badge>
                 </div>
 
                 <div className="flex gap-2">

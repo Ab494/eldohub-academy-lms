@@ -28,6 +28,7 @@ import AdminAnnouncements from "./components/admin/AdminAnnouncements";
 import CoursePlayer from "./pages/CoursePlayer";
 import CoursePreview from "./pages/CoursePreview";
 import Courses from "./pages/Courses";
+import CourseDetail from "./pages/CourseDetail";
 import Settings from "./pages/dashboard/Settings";
 import Help from "./pages/dashboard/Help";
 import NotificationsPage from "./pages/dashboard/NotificationsPage";
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/:courseId" element={<CourseDetail />} />
             <Route path="/course/:courseId" element={<CoursePlayer />} />
             <Route path="/instructor/courses/:courseId/preview" element={<CoursePreview />} />
 

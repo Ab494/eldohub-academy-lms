@@ -132,9 +132,11 @@ const NotificationBell: React.FC = () => {
     },
   });
 
-  // Initial fetch on mount
+  // Initial fetch + polling fallback (every 30s)
   useEffect(() => {
     fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
   }, [fetchUnreadCount]);
 
   // Fetch full list when popover opens

@@ -4,6 +4,7 @@ import { Course } from '../models/Course.js';
 import { Lesson } from '../models/Lesson.js';
 import { AppError } from '../utils/errorHandler.js';
 import { sendEmail, enrollmentEmailTemplate } from '../utils/emailService.js';
+import { NotificationService } from './notificationService.js';
 
 export class EnrollmentService {
   static async enrollStudent(studentId, courseId, userEmail, userName) {
@@ -186,6 +187,17 @@ export class EnrollmentService {
     if (course) {
       course.enrollmentCount += 1;
       await course.save();
+
+      // Send notification to student
+      try {
+        await NotificationService.notifyEnrollmentApproved(
+          enrollment.student,
+          course.title,
+          course._id
+        );
+      } catch (err) {
+        console.error('Failed to send enrollment approval notification:', err);
+      }
     }
 
     // Return populated enrollment
@@ -207,6 +219,19 @@ export class EnrollmentService {
 
     enrollment.status = 'rejected';
     await enrollment.save();
+
+    // Send notification to student
+    try {
+      const course = await Course.findById(enrollment.course);
+      if (course) {
+        await NotificationService.notifyEnrollmentRejected(
+          enrollment.student,
+          course.title
+        );
+      }
+    } catch (err) {
+      console.error('Failed to send enrollment rejection notification:', err);
+    }
 
     // Return populated enrollment
     return await Enrollment.findById(enrollmentId)

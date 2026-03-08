@@ -280,5 +280,19 @@ export const certificateAPI = {
     apiClient.get(`/certificates/my/certificates?${new URLSearchParams(params)}`),
 };
 
+// Notification endpoints
+export const notificationAPI = {
+  getNotifications: (params: Record<string, any> = {}) =>
+    apiClient.get(`/notifications?${new URLSearchParams(params)}`),
+  getUnreadCount: () => apiClient.get('/notifications/unread-count'),
+  markAsRead: (notificationId: string) =>
+    apiClient.patch(`/notifications/${notificationId}/read`, {}),
+  markAllAsRead: () => apiClient.patch('/notifications/read-all', {}),
+  deleteNotification: (notificationId: string) =>
+    apiClient.delete(`/notifications/${notificationId}`),
+  sendAnnouncement: (data: { title: string; message: string; recipientRole?: string; link?: string }) =>
+    apiClient.post('/notifications/announce', data),
+};
+
 // Export default
 export default apiClient;

@@ -28,6 +28,7 @@ import CoursePlayer from "./pages/CoursePlayer";
 import Courses from "./pages/Courses";
 import Settings from "./pages/dashboard/Settings";
 import Help from "./pages/dashboard/Help";
+import NotificationsPage from "./pages/dashboard/NotificationsPage";
 
 const queryClient = new QueryClient();
 
@@ -97,6 +98,9 @@ const App = () => (
             </Route>
             <Route path="/help" element={<DashboardLayout />}>
               <Route index element={<Help />} />
+            </Route>
+            <Route path="/notifications" element={<DashboardLayout />}>
+              <Route index element={<NotificationsPage />} />
             </Route>
 
             {/* Catch All */}

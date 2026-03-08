@@ -33,6 +33,8 @@ const CoursePlayer: React.FC = () => {
   const [progress, setProgress] = useState({ completed: 0, total: 0, percentage: 0 });
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
   const [inProgressLessons, setInProgressLessons] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState<'content' | 'discussion'>('content');
+  const [inProgressLessons, setInProgressLessons] = useState<Set<string>>(new Set());
 
   // Get all lessons flat
   const getAllLessons = useCallback((mods: any[]) => {

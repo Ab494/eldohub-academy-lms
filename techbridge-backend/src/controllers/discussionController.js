@@ -1,5 +1,8 @@
 import { DiscussionPost } from '../models/DiscussionPost.js';
 import { asyncHandler, AppError } from '../utils/errorHandler.js';
+import { sendEmail, discussionReplyEmailTemplate } from '../utils/emailService.js';
+import { User } from '../models/User.js';
+import { Course } from '../models/Course.js';
 
 // Get all top-level posts for a course
 export const getPosts = asyncHandler(async (req, res) => {
@@ -66,9 +69,30 @@ export const createPost = asyncHandler(async (req, res) => {
   const post = new DiscussionPost(postData);
   await post.save();
 
-  // Increment parent's reply count
+  // Increment parent's reply count and send email notification
   if (parentPostId) {
     await DiscussionPost.findByIdAndUpdate(parentPostId, { $inc: { repliesCount: 1 } });
+
+    // Send email to original post author (async, non-blocking)
+    try {
+      const parentPost = await DiscussionPost.findById(parentPostId).populate('author', 'firstName lastName email');
+      if (parentPost && parentPost.author && parentPost.author.email && parentPost.author._id.toString() !== req.userId) {
+        const replier = await User.findById(req.userId).select('firstName lastName');
+        const course = await Course.findById(courseId).select('title');
+        const replierName = replier ? `${replier.firstName} ${replier.lastName}`.trim() : 'Someone';
+        const authorName = parentPost.author.firstName || 'there';
+        const snippet = content.trim().substring(0, 200) + (content.trim().length > 200 ? '…' : '');
+        const courseName = course?.title || 'your course';
+
+        sendEmail(
+          parentPost.author.email,
+          `${replierName} replied to your post in ${courseName}`,
+          discussionReplyEmailTemplate(authorName, replierName, snippet, courseName)
+        ).catch((err) => console.error('Discussion reply email error:', err.message));
+      }
+    } catch (emailErr) {
+      console.error('Failed to send reply notification email:', emailErr.message);
+    }
   }
 
   const populated = await DiscussionPost.findById(post._id)

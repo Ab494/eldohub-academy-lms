@@ -382,67 +382,85 @@ const CoursePlayer: React.FC = () => {
                 </button>
               </div>
 
-              {activeTab === 'content' ? (
-                <div className="flex-1">
-                  <LessonContent lesson={currentLesson} />
+              <AnimatePresence mode="wait">
+                {activeTab === 'content' ? (
+                  <motion.div
+                    key={currentLesson._id + '-content'}
+                    variants={lessonVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    className="flex-1"
+                  >
+                    <LessonContent lesson={currentLesson} />
 
-                  {/* Action bar */}
-                  <div className="px-4 lg:px-8 pb-8">
-                    {/* Mark complete */}
-                    <div className="flex justify-center mb-6">
-                      <Button
-                        variant={isCompleted ? 'outline' : 'default'}
-                        size="lg"
-                        disabled={isCompleted}
-                        onClick={handleMarkComplete}
-                        className={cn(
-                          'w-full sm:w-auto gap-2 font-semibold transition-all',
-                          !isCompleted && 'gradient-success text-accent-foreground shadow-md hover:shadow-lg hover:scale-[1.02]'
-                        )}
-                      >
-                        <CheckCircle className="w-5 h-5" />
-                        {isCompleted ? 'Completed ✓' : 'Mark as Complete & Continue'}
-                      </Button>
-                    </div>
+                    {/* Action bar */}
+                    <div className="px-4 lg:px-8 pb-8">
+                      {/* Mark complete */}
+                      <div className="flex justify-center mb-6">
+                        <motion.div whileHover={{ scale: isCompleted ? 1 : 1.02 }} whileTap={{ scale: isCompleted ? 1 : 0.98 }}>
+                          <Button
+                            variant={isCompleted ? 'outline' : 'default'}
+                            size="lg"
+                            disabled={isCompleted}
+                            onClick={handleMarkComplete}
+                            className={cn(
+                              'w-full sm:w-auto gap-2 font-semibold transition-all',
+                              !isCompleted && 'gradient-success text-accent-foreground shadow-md hover:shadow-lg'
+                            )}
+                          >
+                            <CheckCircle className="w-5 h-5" />
+                            {isCompleted ? 'Completed ✓' : 'Mark as Complete & Continue'}
+                          </Button>
+                        </motion.div>
+                      </div>
 
-                    {/* Prev / Next */}
-                    <div className="flex items-center justify-between gap-3">
-                      {prevLesson ? (
-                        <Button
-                          variant="ghost"
-                          onClick={() => setCurrentLesson(prevLesson)}
-                          className="gap-2 text-muted-foreground hover:text-foreground"
-                        >
-                          <ChevronLeft className="w-4 h-4" />
-                          <div className="text-left hidden sm:block">
-                            <div className="text-[10px] uppercase tracking-wider opacity-60">Previous</div>
-                            <div className="text-sm font-medium truncate max-w-[180px]">{prevLesson.title}</div>
-                          </div>
-                          <span className="sm:hidden text-sm">Previous</span>
-                        </Button>
-                      ) : <div />}
-                      {nextLesson ? (
-                        <Button
-                          variant="ghost"
-                          onClick={() => setCurrentLesson(nextLesson)}
-                          className="gap-2 text-muted-foreground hover:text-foreground"
-                        >
-                          <div className="text-right hidden sm:block">
-                            <div className="text-[10px] uppercase tracking-wider opacity-60">Next</div>
-                            <div className="text-sm font-medium truncate max-w-[180px]">{nextLesson.title}</div>
-                          </div>
-                          <span className="sm:hidden text-sm">Next</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </Button>
-                      ) : <div />}
+                      {/* Prev / Next */}
+                      <div className="flex items-center justify-between gap-3">
+                        {prevLesson ? (
+                          <Button
+                            variant="ghost"
+                            onClick={() => setCurrentLesson(prevLesson)}
+                            className="gap-2 text-muted-foreground hover:text-foreground"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                            <div className="text-left hidden sm:block">
+                              <div className="text-[10px] uppercase tracking-wider opacity-60">Previous</div>
+                              <div className="text-sm font-medium truncate max-w-[180px]">{prevLesson.title}</div>
+                            </div>
+                            <span className="sm:hidden text-sm">Previous</span>
+                          </Button>
+                        ) : <div />}
+                        {nextLesson ? (
+                          <Button
+                            variant="ghost"
+                            onClick={() => setCurrentLesson(nextLesson)}
+                            className="gap-2 text-muted-foreground hover:text-foreground"
+                          >
+                            <div className="text-right hidden sm:block">
+                              <div className="text-[10px] uppercase tracking-wider opacity-60">Next</div>
+                              <div className="text-sm font-medium truncate max-w-[180px]">{nextLesson.title}</div>
+                            </div>
+                            <span className="sm:hidden text-sm">Next</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </Button>
+                        ) : <div />}
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex-1 px-4 lg:px-8 py-6">
-                  {courseId && <CourseDiscussion courseId={courseId} />}
-                </div>
-              )}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="discussion-tab"
+                    variants={tabVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    className="flex-1 px-4 lg:px-8 py-6"
+                  >
+                    {courseId && <CourseDiscussion courseId={courseId} />}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </>
           ) : (
             <CourseWelcome

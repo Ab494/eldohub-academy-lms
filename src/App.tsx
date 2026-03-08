@@ -24,6 +24,7 @@ import AdminCourseCreate from "./components/admin/AdminCourseCreate";
 import InstructorCourseCreate from "./components/instructor/InstructorCourseCreate";
 import CourseBuilder from "./components/instructor/CourseBuilder";
 import EnrollmentRequests from "./components/admin/EnrollmentRequests";
+import AdminAnnouncements from "./components/admin/AdminAnnouncements";
 import CoursePlayer from "./pages/CoursePlayer";
 import Courses from "./pages/Courses";
 import Settings from "./pages/dashboard/Settings";
@@ -90,6 +91,7 @@ const App = () => (
               <Route path="courses/create" element={<AdminCourseCreate key="admin-course-create" />} />
               <Route path="approvals" element={<AdminDashboard key="admin-approvals" />} />
               <Route path="analytics" element={<AdminDashboard key="admin-analytics" />} />
+              <Route path="announcements" element={<AdminAnnouncements />} />
             </Route>
 
             {/* Settings & Help */}

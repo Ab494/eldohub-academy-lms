@@ -17,7 +17,8 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  X
+  X,
+  Megaphone
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth, UserRole } from '@/store/AuthContext';
@@ -48,6 +49,7 @@ const navItems: NavItem[] = [
   { icon: BookOpen, label: 'Courses', href: '/admin/courses', roles: ['admin'] },
   { icon: CheckSquare, label: 'Approvals', href: '/admin/approvals', roles: ['admin'] },
   { icon: BarChart3, label: 'Analytics', href: '/admin/analytics', roles: ['admin'] },
+  { icon: Megaphone, label: 'Announcements', href: '/admin/announcements', roles: ['admin'] },
 ];
 
 const bottomNavItems: NavItem[] = [

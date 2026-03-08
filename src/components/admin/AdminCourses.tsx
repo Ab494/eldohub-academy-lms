@@ -181,7 +181,7 @@ const AdminCourses: React.FC = () => {
       </div>
 
       {/* Courses Table */}
-      <div className="bg-card rounded-lg border border-border">
+      <div className="bg-card rounded-lg border border-border overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

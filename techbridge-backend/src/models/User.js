@@ -38,6 +38,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    emailNotifications: {
+      discussionReplies: {
+        type: Boolean,
+        default: true,
+      },
+    },
     role: {
       type: String,
       enum: ['student', 'instructor', 'admin'],

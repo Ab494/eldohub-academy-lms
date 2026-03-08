@@ -2,6 +2,7 @@ import express from 'express';
 import * as courseController from '../controllers/courseController.js';
 import { authenticate, authorize } from '../middlewares/auth.js';
 import { validateCreateCourse, handleValidationErrors } from '../middlewares/validation.js';
+import { uploadThumbnail } from '../middlewares/upload.js';
 
 const router = express.Router();
 
@@ -16,6 +17,15 @@ router.post(
   validateCreateCourse,
   handleValidationErrors,
   courseController.createCourse
+);
+
+// Upload course thumbnail
+router.post(
+  '/:courseId/thumbnail',
+  authenticate,
+  authorize('instructor', 'admin'),
+  uploadThumbnail,
+  courseController.uploadThumbnail
 );
 
 // Instructor's courses - must come before /:courseId to prevent route collision

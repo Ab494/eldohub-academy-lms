@@ -69,3 +69,26 @@ export const deleteCourse = asyncHandler(async (req, res) => {
     message: result.message,
   });
 });
+
+export const uploadThumbnail = asyncHandler(async (req, res) => {
+  const { courseId } = req.params;
+  if (!req.file) {
+    throw new AppError('No file uploaded', 400);
+  }
+
+  const { config } = await import('../config/index.js');
+  const thumbnailUrl = `${config.backendUrl || ''}/uploads/thumbnails/${req.file.filename}`;
+
+  const course = await CourseService.updateCourse(
+    courseId,
+    { thumbnail: thumbnailUrl },
+    req.userId,
+    req.userRole
+  );
+
+  res.status(200).json({
+    success: true,
+    message: 'Thumbnail uploaded successfully',
+    data: course,
+  });
+});

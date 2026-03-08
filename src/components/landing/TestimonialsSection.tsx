@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const testimonials = [
   {
@@ -31,8 +32,12 @@ const TestimonialsSection: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-3 gap-6">
           {testimonials.map((t, i) => (
-            <div
+            <motion.div
               key={i}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.4, delay: i * 0.12 }}
               className="flex items-start gap-4 p-5 bg-card rounded-xl border border-border"
             >
               <div className="w-11 h-11 rounded-full gradient-hero flex items-center justify-center shrink-0">
@@ -48,7 +53,7 @@ const TestimonialsSection: React.FC = () => {
                 <p className="text-sm font-semibold text-card-foreground">{t.name}</p>
                 <p className="text-xs text-muted-foreground">{t.role}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

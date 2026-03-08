@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Star, Clock, BarChart3 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { courseAPI } from '@/lib/apiClient';
@@ -61,10 +62,16 @@ const FeaturedCoursesSection: React.FC = () => {
   return (
     <section className="py-20 lg:py-28 bg-muted/30">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.5 }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Featured Courses</h2>
           <p className="text-lg text-muted-foreground">Explore our most popular courses chosen by students</p>
-        </div>
+        </motion.div>
 
         {loading ? (
           <div className="grid md:grid-cols-3 gap-6">
@@ -91,9 +98,13 @@ const FeaturedCoursesSection: React.FC = () => {
           </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-6">
-            {courses.map((course) => (
-              <div
+            {courses.map((course, index) => (
+              <motion.div
                 key={course._id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
                 className="group bg-card rounded-xl border border-border overflow-hidden hover:border-primary/30 hover:shadow-medium transition-all duration-300"
               >
                 {/* Thumbnail */}
@@ -158,6 +169,7 @@ const FeaturedCoursesSection: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </motion.div>
             ))}
           </div>
         )}

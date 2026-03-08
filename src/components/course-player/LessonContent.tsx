@@ -9,62 +9,81 @@ import {
   Calendar,
   Target,
   Download,
+  ExternalLink,
+  Zap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 interface LessonContentProps {
   lesson: any;
 }
 
 const LessonContent: React.FC<LessonContentProps> = ({ lesson }) => {
-  if (lesson.type === 'assignment') {
-    return <AssignmentContent lesson={lesson} />;
-  }
+  if (lesson.type === 'assignment') return <AssignmentContent lesson={lesson} />;
   return <RegularLessonContent lesson={lesson} />;
 };
 
 const RegularLessonContent: React.FC<{ lesson: any }> = ({ lesson }) => (
-  <div className="p-6 lg:p-8">
-    <div className="flex items-center gap-3 mb-4">
-      {lesson.type === 'video' ? (
-        <Video className="w-6 h-6 text-primary" />
-      ) : (
-        <FileText className="w-6 h-6 text-blue-500" />
-      )}
-      <Badge variant="outline" className="capitalize">
+  <div className="p-4 lg:p-8 animate-fade-in">
+    {/* Lesson header */}
+    <div className="flex items-center gap-2 mb-3">
+      <div className={cn(
+        'w-8 h-8 rounded-lg flex items-center justify-center',
+        lesson.type === 'video' ? 'bg-primary/10' : 'bg-accent/10'
+      )}>
+        {lesson.type === 'video' ? (
+          <Video className="w-4 h-4 text-primary" />
+        ) : (
+          <FileText className="w-4 h-4 text-accent" />
+        )}
+      </div>
+      <Badge variant="outline" className="capitalize text-xs">
         {lesson.type}
       </Badge>
+      {lesson.duration && (
+        <span className="text-xs text-muted-foreground flex items-center gap-1">
+          <Clock className="w-3 h-3" /> {lesson.duration}
+        </span>
+      )}
     </div>
 
-    <h2 className="text-2xl font-bold text-foreground mb-4">{lesson.title}</h2>
+    <h2 className="text-xl lg:text-2xl font-bold text-foreground mb-3">{lesson.title}</h2>
 
-    <p className="text-muted-foreground mb-6">
+    <p className="text-muted-foreground leading-relaxed mb-6">
       {lesson.description || 'No description available for this lesson.'}
     </p>
 
+    {/* Video link card */}
     {lesson.type === 'video' && lesson.videoUrl && (
-      <div className="mb-6">
-        <div className="bg-muted p-4 rounded-lg">
-          <p className="text-sm font-medium mb-2">Video Content</p>
+      <Card className="mb-6 overflow-hidden border-primary/20">
+        <CardContent className="p-0">
           <a
             href={lesson.videoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary hover:underline flex items-center gap-2"
+            className="flex items-center gap-4 p-4 hover:bg-primary/5 transition-colors group"
           >
-            <Play className="w-4 h-4" />
-            Watch Video
+            <div className="w-12 h-12 rounded-xl gradient-hero flex items-center justify-center shrink-0 shadow-sm">
+              <Play className="w-5 h-5 text-primary-foreground ml-0.5" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-foreground group-hover:text-primary transition-colors">Watch Video</p>
+              <p className="text-xs text-muted-foreground truncate">{lesson.videoUrl}</p>
+            </div>
+            <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0" />
           </a>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     )}
 
+    {/* Text content */}
     {lesson.type === 'text' && lesson.content && (
       <Card>
         <CardContent className="p-6">
-          <div className="prose prose-sm max-w-none">
+          <div className="prose prose-sm max-w-none text-foreground leading-relaxed">
             <p>{lesson.content}</p>
           </div>
         </CardContent>
@@ -74,17 +93,20 @@ const RegularLessonContent: React.FC<{ lesson: any }> = ({ lesson }) => (
 );
 
 const AssignmentContent: React.FC<{ lesson: any }> = ({ lesson }) => (
-  <div className="p-6 lg:p-8 space-y-6">
-    <Card className="overflow-hidden">
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
-        <div className="flex items-center gap-3 mb-2">
-          <FileCheck className="w-8 h-8" />
-          <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+  <div className="p-4 lg:p-8 animate-fade-in">
+    <Card className="overflow-hidden border-0 shadow-medium">
+      {/* Assignment header */}
+      <div className="gradient-hero p-6 text-primary-foreground">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-xl bg-primary-foreground/20 backdrop-blur flex items-center justify-center">
+            <Zap className="w-5 h-5" />
+          </div>
+          <Badge className="bg-primary-foreground/20 text-primary-foreground border-0 backdrop-blur">
             Assignment
           </Badge>
         </div>
         <h2 className="text-2xl font-bold mb-2">{lesson.title}</h2>
-        <p className="text-blue-100">
+        <p className="text-primary-foreground/80">
           {lesson.description || 'Complete this assignment to test your understanding.'}
         </p>
       </div>
@@ -92,26 +114,22 @@ const AssignmentContent: React.FC<{ lesson: any }> = ({ lesson }) => (
       <CardContent className="p-6">
         {lesson.questions && lesson.questions.length > 0 ? (
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold">Assignment Questions</h3>
+            <h3 className="text-lg font-semibold text-foreground">Assignment Questions</h3>
             {lesson.questions.map((question: any, index: number) => (
-              <Card key={index} className="p-4">
+              <Card key={index} className="p-4 border-border">
                 <div className="space-y-4">
-                  <h4 className="font-medium">
-                    {index + 1}. {question.question}
+                  <h4 className="font-medium text-foreground">
+                    <span className="text-primary font-bold mr-2">{index + 1}.</span>
+                    {question.question}
                   </h4>
                   <div className="space-y-2">
                     {question.options.map((option: string, optIndex: number) => (
                       <label
                         key={optIndex}
-                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer"
+                        className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/30 hover:bg-primary/5 cursor-pointer transition-all"
                       >
-                        <input
-                          type="radio"
-                          name={`question-${index}`}
-                          value={optIndex}
-                          className="w-4 h-4 text-primary"
-                        />
-                        <span className="text-sm">{option}</span>
+                        <input type="radio" name={`question-${index}`} value={optIndex} className="w-4 h-4 text-primary accent-primary" />
+                        <span className="text-sm text-foreground">{option}</span>
                       </label>
                     ))}
                   </div>
@@ -119,67 +137,48 @@ const AssignmentContent: React.FC<{ lesson: any }> = ({ lesson }) => (
               </Card>
             ))}
             <div className="flex justify-end">
-              <Button className="bg-primary hover:bg-primary/90">
-                <FileCheck className="w-4 h-4 mr-2" />
-                Submit Assignment
+              <Button className="gradient-hero text-primary-foreground gap-2">
+                <FileCheck className="w-4 h-4" /> Submit Assignment
               </Button>
             </div>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                <Clock className="w-5 h-5 text-primary" />
-                <div>
-                  <p className="text-sm font-medium">Duration</p>
-                  <p className="text-sm text-muted-foreground">{lesson.duration || '2 hours'}</p>
+            {/* Stats grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+              {[
+                { icon: Clock, label: 'Duration', value: lesson.duration || '2 hours', color: 'text-primary' },
+                { icon: Calendar, label: 'Due Date', value: 'TBD', color: 'text-destructive' },
+                { icon: Target, label: 'Status', value: 'Not Started', color: 'text-accent' },
+              ].map(({ icon: Icon, label, value, color }) => (
+                <div key={label} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 border border-border">
+                  <Icon className={cn('w-5 h-5', color)} />
+                  <div>
+                    <p className="text-xs text-muted-foreground">{label}</p>
+                    <p className="text-sm font-semibold text-foreground">{value}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                <Calendar className="w-5 h-5 text-orange-500" />
-                <div>
-                  <p className="text-sm font-medium">Due Date</p>
-                  <p className="text-sm text-muted-foreground">TBD</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                <Target className="w-5 h-5 text-green-500" />
-                <div>
-                  <p className="text-sm font-medium">Status</p>
-                  <Badge variant="outline" className="text-green-600 border-green-600">
-                    Not Started
-                  </Badge>
-                </div>
-              </div>
+              ))}
             </div>
 
             <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-3">Assignment Overview</h3>
-              <p className="text-muted-foreground mb-4">
-                This assignment will help you apply the concepts learned in this module.
-              </p>
-            </div>
-
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-3">Learning Objectives</h3>
+              <h3 className="text-base font-semibold text-foreground mb-3">Learning Objectives</h3>
               <ul className="space-y-2">
                 {['Apply theoretical concepts to practical scenarios', 'Demonstrate problem-solving skills', 'Present solutions in a clear and structured manner'].map((obj, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">{obj}</span>
+                  <li key={i} className="flex items-start gap-2.5">
+                    <CheckCircle className="w-4 h-4 text-accent mt-0.5 shrink-0" />
+                    <span className="text-sm text-muted-foreground">{obj}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button className="bg-primary hover:bg-primary/90">
-                <FileCheck className="w-4 h-4 mr-2" />
-                Start Assignment
+              <Button className="gradient-hero text-primary-foreground gap-2">
+                <FileCheck className="w-4 h-4" /> Start Assignment
               </Button>
-              <Button variant="outline">
-                <Download className="w-4 h-4 mr-2" />
-                Download Materials
+              <Button variant="outline" className="gap-2">
+                <Download className="w-4 h-4" /> Download Materials
               </Button>
             </div>
           </>

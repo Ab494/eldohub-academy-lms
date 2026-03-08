@@ -1,5 +1,6 @@
 import React from 'react';
 import { BookOpen, Users, Award, GraduationCap } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const features = [
   {
@@ -28,19 +29,29 @@ const FeaturesSection: React.FC = () => {
   return (
     <section className="py-20 lg:py-28">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.5 }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Why Choose TechBridge Academy?
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             We provide everything you need to succeed in your learning journey
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
-            <div
+            <motion.div
               key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
               className="group p-6 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-medium transition-all duration-300"
             >
               <div className="w-14 h-14 rounded-xl gradient-hero flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
@@ -48,7 +59,7 @@ const FeaturesSection: React.FC = () => {
               </div>
               <h3 className="text-xl font-bold text-card-foreground mb-2">{feature.title}</h3>
               <p className="text-muted-foreground">{feature.description}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

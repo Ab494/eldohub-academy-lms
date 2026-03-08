@@ -154,7 +154,7 @@ const CourseDiscussion: React.FC<CourseDiscussionProps> = ({ courseId }) => {
               key={post._id}
               post={post}
               courseId={courseId}
-              currentUserId={user?._id || user?.id}
+              currentUserId={user?._id}
               onDelete={(id) => setPosts((prev) => prev.filter((p) => p._id !== id))}
             />
           ))}

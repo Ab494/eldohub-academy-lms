@@ -294,5 +294,19 @@ export const notificationAPI = {
     apiClient.post('/notifications/announce', data),
 };
 
+// Discussion endpoints
+export const discussionAPI = {
+  getPosts: (courseId: string, params: Record<string, any> = {}) =>
+    apiClient.get(`/courses/${courseId}/discussions?${new URLSearchParams(params)}`),
+  getReplies: (courseId: string, postId: string) =>
+    apiClient.get(`/courses/${courseId}/discussions/${postId}/replies`),
+  createPost: (courseId: string, data: { content: string; parentPostId?: string }) =>
+    apiClient.post(`/courses/${courseId}/discussions`, data),
+  toggleLike: (courseId: string, postId: string) =>
+    apiClient.post(`/courses/${courseId}/discussions/${postId}/like`, {}),
+  deletePost: (courseId: string, postId: string) =>
+    apiClient.delete(`/courses/${courseId}/discussions/${postId}`),
+};
+
 // Export default
 export default apiClient;

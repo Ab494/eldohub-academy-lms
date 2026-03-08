@@ -27,61 +27,42 @@ const LessonContent: React.FC<LessonContentProps> = ({ lesson }) => {
 };
 
 const RegularLessonContent: React.FC<{ lesson: any }> = ({ lesson }) => (
-  <div className="p-4 lg:p-8 animate-fade-in">
-    {/* Lesson header */}
-    <div className="flex items-center gap-2 mb-3">
-      <div className={cn(
-        'w-8 h-8 rounded-lg flex items-center justify-center',
-        lesson.type === 'video' ? 'bg-primary/10' : 'bg-accent/10'
-      )}>
-        {lesson.type === 'video' ? (
-          <Video className="w-4 h-4 text-primary" />
-        ) : (
-          <FileText className="w-4 h-4 text-accent" />
-        )}
-      </div>
-      <Badge variant="outline" className="capitalize text-xs">
-        {lesson.type}
-      </Badge>
-      {lesson.duration && (
-        <span className="text-xs text-muted-foreground flex items-center gap-1">
-          <Clock className="w-3 h-3" /> {lesson.duration}
-        </span>
-      )}
-    </div>
-
-    <h2 className="text-xl lg:text-2xl font-bold text-foreground mb-3">{lesson.title}</h2>
-
-    <p className="text-muted-foreground leading-relaxed mb-6">
-      {lesson.description || 'No description available for this lesson.'}
-    </p>
-
-    {/* Video link card */}
+  <div className="p-4 lg:p-8 space-y-6">
+    {/* Video embed area */}
     {lesson.type === 'video' && lesson.videoUrl && (
-      <Card className="mb-6 overflow-hidden border-primary/20">
+      <Card className="overflow-hidden border-primary/20 bg-secondary/5">
         <CardContent className="p-0">
           <a
             href={lesson.videoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-4 p-4 hover:bg-primary/5 transition-colors group"
+            className="flex items-center gap-4 p-5 hover:bg-primary/5 transition-colors group"
           >
-            <div className="w-12 h-12 rounded-xl gradient-hero flex items-center justify-center shrink-0 shadow-sm">
-              <Play className="w-5 h-5 text-primary-foreground ml-0.5" />
+            <div className="w-14 h-14 rounded-xl gradient-hero flex items-center justify-center shrink-0 shadow-sm">
+              <Play className="w-6 h-6 text-primary-foreground ml-0.5" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-foreground group-hover:text-primary transition-colors">Watch Video</p>
-              <p className="text-xs text-muted-foreground truncate">{lesson.videoUrl}</p>
+              <p className="font-semibold text-foreground group-hover:text-primary transition-colors text-base">
+                Watch Video Lesson
+              </p>
+              <p className="text-sm text-muted-foreground mt-0.5">Opens in a new tab</p>
             </div>
-            <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0" />
+            <ExternalLink className="w-5 h-5 text-muted-foreground shrink-0" />
           </a>
         </CardContent>
       </Card>
     )}
 
+    {/* Description */}
+    {lesson.description && (
+      <p className="text-muted-foreground leading-relaxed">
+        {lesson.description}
+      </p>
+    )}
+
     {/* Text content */}
     {lesson.type === 'text' && lesson.content && (
-      <Card>
+      <Card className="border-border/60">
         <CardContent className="p-6">
           <div className="prose prose-sm max-w-none text-foreground leading-relaxed">
             <p>{lesson.content}</p>
@@ -89,11 +70,22 @@ const RegularLessonContent: React.FC<{ lesson: any }> = ({ lesson }) => (
         </CardContent>
       </Card>
     )}
+
+    {/* No-content fallback */}
+    {!lesson.content && !lesson.videoUrl && !lesson.description && (
+      <div className="text-center py-12">
+        <div className="w-16 h-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4">
+          <FileText className="w-7 h-7 text-muted-foreground" />
+        </div>
+        <p className="text-muted-foreground font-medium">No content available for this lesson yet.</p>
+        <p className="text-sm text-muted-foreground/60 mt-1">Check back later for updates.</p>
+      </div>
+    )}
   </div>
 );
 
 const AssignmentContent: React.FC<{ lesson: any }> = ({ lesson }) => (
-  <div className="p-4 lg:p-8 animate-fade-in">
+  <div className="p-4 lg:p-8">
     <Card className="overflow-hidden border-0 shadow-medium">
       {/* Assignment header */}
       <div className="gradient-hero p-6 text-primary-foreground">
@@ -144,7 +136,6 @@ const AssignmentContent: React.FC<{ lesson: any }> = ({ lesson }) => (
           </div>
         ) : (
           <>
-            {/* Stats grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
               {[
                 { icon: Clock, label: 'Duration', value: lesson.duration || '2 hours', color: 'text-primary' },

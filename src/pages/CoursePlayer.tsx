@@ -9,6 +9,8 @@ import {
   ChevronRight,
   ChevronLeft,
   CheckCircle,
+  MessageSquare,
+  BookOpen,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -17,6 +19,8 @@ import { useToast } from '@/hooks/use-toast';
 import CoursePlayerSidebar from '@/components/course-player/CoursePlayerSidebar';
 import CourseWelcome from '@/components/course-player/CourseWelcome';
 import LessonContent from '@/components/course-player/LessonContent';
+import CourseDiscussion from '@/components/course-player/CourseDiscussion';
+import { cn } from '@/lib/utils';
 
 const CoursePlayer: React.FC = () => {
   const { courseId } = useParams();

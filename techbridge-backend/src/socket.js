@@ -3,6 +3,13 @@ import jwt from 'jsonwebtoken';
 import { config } from './config/index.js';
 
 let io = null;
+const onlineUsers = new Set();
+
+function broadcastOnlineCount() {
+  if (io) {
+    io.to('role:admin').emit('online:count', { count: onlineUsers.size });
+  }
+}
 
 /**
  * Initialize Socket.IO on an existing HTTP server
@@ -29,6 +36,7 @@ export function initSocket(httpServer) {
     try {
       const decoded = jwt.verify(token, config.jwtSecret);
       socket.userId = decoded.userId || decoded.id;
+      socket.userRole = decoded.role || null;
       next();
     } catch {
       next(new Error('Invalid token'));
@@ -36,13 +44,37 @@ export function initSocket(httpServer) {
   });
 
   io.on('connection', (socket) => {
-    // Join a personal room keyed by userId
+    // Join personal room
     if (socket.userId) {
       socket.join(`user:${socket.userId}`);
+      onlineUsers.add(socket.userId);
     }
 
+    // Join role room for admins
+    if (socket.userRole === 'admin') {
+      socket.join('role:admin');
+      // Send current count immediately to the newly connected admin
+      socket.emit('online:count', { count: onlineUsers.size });
+    }
+
+    broadcastOnlineCount();
+
     socket.on('disconnect', () => {
-      // cleanup if needed
+      if (socket.userId) {
+        // Only remove if no other sockets for this user
+        const sockets = io.sockets.sockets;
+        let stillConnected = false;
+        for (const [, s] of sockets) {
+          if (s.userId === socket.userId && s.id !== socket.id) {
+            stillConnected = true;
+            break;
+          }
+        }
+        if (!stillConnected) {
+          onlineUsers.delete(socket.userId);
+        }
+      }
+      broadcastOnlineCount();
     });
   });
 

@@ -74,3 +74,16 @@ export const courseCompletionEmailTemplate = (studentName, courseName, certifica
     <p>Best regards,<br/>TechBridge Academy Team</p>
   </div>
 `;
+
+export const discussionReplyEmailTemplate = (authorName, replierName, postSnippet, courseName) => `
+  <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
+    <h2>New Reply to Your Discussion Post</h2>
+    <p>Hi ${authorName},</p>
+    <p><strong>${replierName}</strong> replied to your post in <strong>${courseName}</strong>:</p>
+    <div style="background: #f5f5f5; border-left: 4px solid #e8a020; padding: 12px 16px; margin: 16px 0; border-radius: 4px;">
+      <p style="margin: 0; color: #555; font-style: italic;">"${postSnippet}"</p>
+    </div>
+    <p>Head to the course discussion to continue the conversation.</p>
+    <p>Best regards,<br/>TechBridge Academy Team</p>
+  </div>
+`;

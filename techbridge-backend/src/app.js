@@ -16,6 +16,7 @@ import quizRoutes from './routes/quizRoutes.js';
 import assignmentRoutes from './routes/assignmentRoutes.js';
 import certificateRoutes from './routes/certificateRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import discussionRoutes from './routes/discussionRoutes.js';
 
 const app = express();
 
@@ -70,6 +71,7 @@ app.use('/api/courses/:courseId/assignments', assignmentRoutes);
 app.use('/api/assignments', assignmentRoutes);
 app.use('/api/certificates', certificateRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/courses/:courseId/discussions', discussionRoutes);
 
 // 404 handler
 app.use((req, res) => {

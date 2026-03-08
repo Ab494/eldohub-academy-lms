@@ -1,8 +1,18 @@
 import { AuthService } from '../services/authService.js';
 import { asyncHandler, AppError } from '../utils/errorHandler.js';
+import { emitToUsers, getIO } from '../socket.js';
 
 export const register = asyncHandler(async (req, res) => {
   const result = await AuthService.register(req.body);
+
+  // Emit registration activity to admins
+  const io = getIO();
+  if (io) {
+    io.to('role:admin').emit('activity:registration', {
+      userName: `${req.body.firstName || ''} ${req.body.lastName || ''}`.trim() || 'New user',
+    });
+  }
+
   res.status(201).json({
     success: true,
     message: 'User registered successfully',
@@ -13,6 +23,16 @@ export const register = asyncHandler(async (req, res) => {
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const result = await AuthService.login(email, password);
+
+  // Emit login activity to admins
+  const io = getIO();
+  if (io) {
+    const name = result.user?.firstName
+      ? `${result.user.firstName} ${result.user.lastName || ''}`.trim()
+      : email;
+    io.to('role:admin').emit('activity:login', { userName: name });
+  }
+
   res.status(200).json({
     success: true,
     message: 'Login successful',

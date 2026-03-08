@@ -1,6 +1,7 @@
 import { AssignmentService } from '../services/assignmentService.js';
 import { asyncHandler, AppError } from '../utils/errorHandler.js';
 import { Assignment } from '../models/Assignment.js';
+import { getIO } from '../socket.js';
 
 export const createAssignment = asyncHandler(async (req, res) => {
   const { lessonId } = req.params;
@@ -33,6 +34,15 @@ export const submitAssignment = asyncHandler(async (req, res) => {
     fileUrl,
     fileName
   );
+
+  // Emit submission activity to admins
+  const io = getIO();
+  if (io) {
+    io.to('role:admin').emit('activity:submission', {
+      userName: req.userName || 'A student',
+      assignmentTitle: submission.assignmentTitle || 'an assignment',
+    });
+  }
 
   res.status(201).json({
     success: true,

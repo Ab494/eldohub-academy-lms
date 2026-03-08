@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { User, Mail, Phone, Lock, Save, Loader2, Camera, Upload } from 'lucide-react';
+import { User, Mail, Phone, Lock, Save, Loader2, Camera, Upload, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/store/AuthContext';
 import { authAPI } from '@/lib/apiClient';
 import { useToast } from '@/hooks/use-toast';
+import { Switch } from '@/components/ui/switch';
 
 const Settings: React.FC = () => {
   const { user, updateProfile } = useAuth();
@@ -29,6 +30,20 @@ const Settings: React.FC = () => {
   const [savingPassword, setSavingPassword] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user?.avatar || null);
+  const [discussionReplies, setDiscussionReplies] = useState(user?.emailNotifications?.discussionReplies !== false);
+  const [savingNotifications, setSavingNotifications] = useState(false);
+
+  const handleNotificationsSave = async () => {
+    try {
+      setSavingNotifications(true);
+      await updateProfile({ emailNotifications: { discussionReplies } } as any);
+      toast({ title: 'Success', description: 'Notification preferences saved' });
+    } catch {
+      toast({ title: 'Error', description: 'Failed to save preferences', variant: 'destructive' });
+    } finally {
+      setSavingNotifications(false);
+    }
+  };
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
@@ -170,8 +185,9 @@ const Settings: React.FC = () => {
 
       {/* Tabs */}
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
         </TabsList>
 
@@ -241,6 +257,31 @@ const Settings: React.FC = () => {
             <Button onClick={handleProfileSave} disabled={savingProfile} className="gap-2">
               {savingProfile ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save Changes
+            </Button>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="notifications" className="mt-6">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-card space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <Bell className="w-5 h-5" />
+                Email Notifications
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">Choose which emails you'd like to receive</p>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-b border-border">
+              <div className="space-y-0.5">
+                <p className="text-sm font-medium text-foreground">Discussion replies</p>
+                <p className="text-xs text-muted-foreground">Get notified when someone replies to your discussion posts</p>
+              </div>
+              <Switch checked={discussionReplies} onCheckedChange={setDiscussionReplies} />
+            </div>
+
+            <Button onClick={handleNotificationsSave} disabled={savingNotifications} className="gap-2">
+              {savingNotifications ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Save Preferences
             </Button>
           </div>
         </TabsContent>

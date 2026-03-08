@@ -26,6 +26,7 @@ import CourseBuilder from "./components/instructor/CourseBuilder";
 import EnrollmentRequests from "./components/admin/EnrollmentRequests";
 import AdminAnnouncements from "./components/admin/AdminAnnouncements";
 import CoursePlayer from "./pages/CoursePlayer";
+import CoursePreview from "./pages/CoursePreview";
 import Courses from "./pages/Courses";
 import Settings from "./pages/dashboard/Settings";
 import Help from "./pages/dashboard/Help";
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/course/:courseId" element={<CoursePlayer />} />
+            <Route path="/instructor/courses/:courseId/preview" element={<CoursePreview />} />
 
             {/* Student Dashboard */}
             <Route path="/dashboard" element={

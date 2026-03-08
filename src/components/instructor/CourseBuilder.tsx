@@ -322,7 +322,7 @@ const CourseBuilder: React.FC = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => navigate(`/course/${selectedCourse}`)}
+                onClick={() => navigate(`/instructor/courses/${selectedCourse}/preview`)}
               >
                 <Eye className="w-4 h-4 mr-1" /> Preview
               </Button>

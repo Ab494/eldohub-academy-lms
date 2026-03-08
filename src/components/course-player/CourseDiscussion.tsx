@@ -160,6 +160,22 @@ const CourseDiscussion: React.FC<CourseDiscussionProps> = ({ courseId }) => {
         </div>
       </div>
 
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          placeholder="Search discussions…"
+          value={searchQuery}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="pl-9 pr-9"
+        />
+        {searchQuery && (
+          <button onClick={clearSearch} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+
       {/* Posts */}
       {loading ? (
         <div className="flex items-center justify-center py-12">

@@ -9,7 +9,8 @@ import {
   TrendingUp,
   AlertCircle,
   UserPlus,
-  Loader2
+  Loader2,
+  Wifi
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import StatsCard from '@/components/dashboard/StatsCard';
@@ -22,6 +23,7 @@ import EnrollmentRequests from '@/components/admin/EnrollmentRequests';
 import { useAuth } from '@/store/AuthContext';
 import { adminAPI } from '@/lib/apiClient';
 import { useToast } from '@/hooks/use-toast';
+import { useSocket } from '@/hooks/useSocket';
 
 interface DashboardStats {
   users: {
@@ -54,6 +56,14 @@ const AdminDashboard: React.FC = () => {
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [onlineCount, setOnlineCount] = useState(0);
+
+  // Listen for live online user count
+  useSocket({
+    'online:count': (data: { count: number }) => {
+      setOnlineCount(data.count);
+    },
+  });
 
   // Check if we're on specific admin pages
   if (location.pathname === '/admin/users') {
@@ -123,7 +133,7 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatsCard
           title="Total Users"
           value={loading ? '...' : stats?.users.total.toString() || '0'}
@@ -148,6 +158,25 @@ const AdminDashboard: React.FC = () => {
           icon={DollarSign}
           variant="accent"
         />
+        {/* Live Online Users */}
+        <div className="bg-card rounded-xl border border-border p-6 shadow-card hover:shadow-medium transition-all duration-300">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground mb-1">Online Now</p>
+              <p className="text-3xl font-bold text-card-foreground">{onlineCount}</p>
+              <div className="flex items-center gap-1.5 mt-2">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                </span>
+                <span className="text-xs font-medium text-green-600">Live</span>
+              </div>
+            </div>
+            <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
+              <Wifi className="w-6 h-6 text-green-600" />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Main Content Grid */}

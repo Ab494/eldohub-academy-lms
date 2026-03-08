@@ -267,7 +267,7 @@ const CoursePlayer: React.FC = () => {
           {currentLesson ? (
             <>
               {/* Video / Media Area */}
-              <div className="relative aspect-video bg-secondary overflow-hidden group">
+              <div className="relative aspect-[21/9] max-h-[400px] bg-secondary overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-t from-secondary via-transparent to-secondary/30 z-[1] pointer-events-none" />
                 
                 <AnimatePresence mode="wait">

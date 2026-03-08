@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Save, Loader2, Upload, X, Plus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/ui/RichTextEditor';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -156,8 +156,13 @@ const AdminCourseCreate: React.FC = () => {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Course Description *</Label>
-            <Textarea id="description" placeholder="Describe what students will learn..." rows={4} value={formData.description} onChange={(e) => handleInputChange('description', e.target.value)} required />
+            <Label>Course Description *</Label>
+            <RichTextEditor
+              content={formData.description}
+              onChange={(html) => handleInputChange('description', html)}
+              placeholder="Describe what students will learn..."
+            />
+          </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">

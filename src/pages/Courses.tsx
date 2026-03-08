@@ -33,7 +33,7 @@ interface Course {
 
 interface Enrollment {
   _id: string;
-  course: string;
+  course: string | { _id: string };
   status: string;
 }
 
@@ -92,7 +92,10 @@ const Courses: React.FC = () => {
   };
 
   const getEnrollmentStatus = (courseId: string) => {
-    const enrollment = enrollments.find(e => e.course === courseId);
+    const enrollment = enrollments.find(e => {
+      const eCourseId = typeof e.course === 'object' ? e.course._id : e.course;
+      return eCourseId === courseId;
+    });
     return enrollment ? enrollment.status : null;
   };
 

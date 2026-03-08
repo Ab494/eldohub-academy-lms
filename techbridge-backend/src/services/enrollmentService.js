@@ -46,21 +46,30 @@ export class EnrollmentService {
       });
     }
 
-    // Create notification for all admins
+    // Create notification for all admins and the course instructor
     try {
       const { User } = await import('../models/User.js');
       const admins = await User.find({ role: 'admin', isActive: true }).select('_id');
-      const adminIds = admins.map((a) => a._id);
-      if (adminIds.length > 0) {
+      const recipientIds = admins.map((a) => a._id.toString());
+
+      // Add course instructor if not already an admin
+      if (course.instructor) {
+        const instructorId = course.instructor.toString();
+        if (!recipientIds.includes(instructorId)) {
+          recipientIds.push(instructorId);
+        }
+      }
+
+      if (recipientIds.length > 0) {
         await NotificationService.notifyNewEnrollmentRequest(
-          adminIds,
+          recipientIds,
           userName || 'A student',
           course.title,
           enrollment._id
         );
       }
     } catch (err) {
-      console.error('Failed to send enrollment request notification to admins:', err);
+      console.error('Failed to send enrollment request notification:', err);
     }
     // Don't update course enrollment count until approved
     // course.enrollmentCount += 1;

@@ -100,6 +100,19 @@ const NotificationBell: React.FC = () => {
     }
   }, [isAuthenticated]);
 
+  // Play notification sound
+  const playNotificationSound = useCallback(() => {
+    try {
+      const audio = new Audio('/sounds/notification.mp3');
+      audio.volume = 0.5;
+      audio.play().catch(() => {
+        // Autoplay may be blocked by browser
+      });
+    } catch {
+      // Silent fail
+    }
+  }, []);
+
   // Listen for real-time notifications via WebSocket
   useSocket({
     'notification:new': (data: any) => {
@@ -107,10 +120,12 @@ const NotificationBell: React.FC = () => {
       if (data && data._id) {
         setNotifications((prev) => [data, ...prev].slice(0, 20));
         setUnreadCount((prev) => prev + 1);
+        playNotificationSound();
         toast({ title: data.title, description: data.message });
       } else {
         // Bulk notification – just refresh the count
         fetchUnreadCount();
+        playNotificationSound();
       }
     },
   });

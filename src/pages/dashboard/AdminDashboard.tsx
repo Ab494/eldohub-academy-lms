@@ -65,27 +65,6 @@ const AdminDashboard: React.FC = () => {
     },
   });
 
-  // Check if we're on specific admin pages
-  if (location.pathname === '/admin/users') {
-    return <AdminUsers />;
-  }
-  if (location.pathname === '/admin/courses') {
-    return <AdminCourses />;
-  }
-  if (location.pathname === '/admin/approvals') {
-    return <AdminApprovals />;
-  }
-  if (location.pathname === '/admin/analytics') {
-    return <AdminAnalytics />;
-  }
-
-  useEffect(() => {
-    // Only fetch stats when on the main dashboard route
-    if (location.pathname === '/admin') {
-      fetchDashboardStats();
-    }
-  }, []); // Run once on mount since each route gets a fresh component instance
-
   const fetchDashboardStats = async () => {
     try {
       setLoading(true);
@@ -103,6 +82,26 @@ const AdminDashboard: React.FC = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (location.pathname === '/admin') {
+      fetchDashboardStats();
+    }
+  }, []);
+
+  // Check if we're on specific admin pages
+  if (location.pathname === '/admin/users') {
+    return <AdminUsers />;
+  }
+  if (location.pathname === '/admin/courses') {
+    return <AdminCourses />;
+  }
+  if (location.pathname === '/admin/approvals') {
+    return <AdminApprovals />;
+  }
+  if (location.pathname === '/admin/analytics') {
+    return <AdminAnalytics />;
+  }
 
   return (
     <div className="space-y-8 animate-fade-in">

@@ -20,6 +20,7 @@ import AdminApprovals from '@/components/admin/AdminApprovals';
 import AdminAnalytics from '@/components/admin/AdminAnalytics';
 import AdminCourseCreate from '@/components/admin/AdminCourseCreate';
 import EnrollmentRequests from '@/components/admin/EnrollmentRequests';
+import AdminActivityFeed from '@/components/admin/AdminActivityFeed';
 import { useAuth } from '@/store/AuthContext';
 import { adminAPI } from '@/lib/apiClient';
 import { useToast } from '@/hooks/use-toast';
@@ -185,24 +186,9 @@ const AdminDashboard: React.FC = () => {
           <EnrollmentRequests title="Pending Enrollment Requests" />
         </div>
 
-        {/* Recent Users - Empty State */}
+        {/* Live Activity Feed */}
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-accent" />
-              New Users
-            </h2>
-          </div>
-
-          <div className="bg-card rounded-xl border border-border p-5 shadow-card">
-            <div className="text-center py-8">
-              <Users className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground">No new users</p>
-            </div>
-            <Button variant="ghost" className="w-full mt-4" asChild>
-              <Link to="/admin/users">View All Users</Link>
-            </Button>
-          </div>
+          <AdminActivityFeed />
         </div>
       </div>
 

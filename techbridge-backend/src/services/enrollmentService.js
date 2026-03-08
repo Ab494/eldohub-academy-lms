@@ -5,6 +5,7 @@ import { Lesson } from '../models/Lesson.js';
 import { AppError } from '../utils/errorHandler.js';
 import { sendEmail, enrollmentEmailTemplate } from '../utils/emailService.js';
 import { NotificationService } from './notificationService.js';
+import { getIO } from '../socket.js';
 
 export class EnrollmentService {
   static async enrollStudent(studentId, courseId, userEmail, userName) {
@@ -36,6 +37,14 @@ export class EnrollmentService {
 
     await enrollment.save();
 
+    // Emit enrollment activity to admins
+    const io = getIO();
+    if (io) {
+      io.to('role:admin').emit('activity:enrollment', {
+        userName: userName || 'A student',
+        courseName: course.title,
+      });
+    }
     // Don't update course enrollment count until approved
     // course.enrollmentCount += 1;
     // await course.save();

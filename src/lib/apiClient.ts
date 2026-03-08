@@ -116,6 +116,25 @@ class APIClient {
     return this.handleResponse(response);
   }
 
+  async uploadFile(endpoint: string, file: File, fieldName = 'avatar') {
+    const formData = new FormData();
+    formData.append(fieldName, file);
+
+    const token = this.getToken();
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${this.baseURL}${endpoint}`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    return this.handleResponse(response);
+  }
+
   async handleResponse(response: Response) {
     const data = await response.json().catch(() => null);
 
@@ -140,6 +159,7 @@ export const authAPI = {
   logout: () => apiClient.post('/auth/logout', {}),
   getCurrentUser: () => apiClient.get('/auth/me'),
   updateProfile: (data: any) => apiClient.put('/auth/profile', data),
+  uploadAvatar: (file: File) => apiClient.uploadFile('/auth/avatar', file, 'avatar'),
   changePassword: (oldPassword: string, newPassword: string) =>
     apiClient.post('/auth/change-password', { oldPassword, newPassword }),
 };

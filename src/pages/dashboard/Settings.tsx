@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { User, Mail, Phone, FileText, Lock, Save, Loader2, Camera } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { User, Mail, Phone, Lock, Save, Loader2, Camera, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 const Settings: React.FC = () => {
   const { user, updateProfile } = useAuth();
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [profileForm, setProfileForm] = useState({
     firstName: user?.firstName || '',
@@ -26,6 +27,53 @@ const Settings: React.FC = () => {
   });
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(user?.avatar || null);
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: 'Error', description: 'Image must be less than 5MB', variant: 'destructive' });
+      return;
+    }
+
+    // Validate file type
+    if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
+      toast({ title: 'Error', description: 'Only JPEG, PNG, WebP, and GIF images are allowed', variant: 'destructive' });
+      return;
+    }
+
+    // Show preview immediately
+    const reader = new FileReader();
+    reader.onload = (ev) => setAvatarPreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+
+    // Upload
+    try {
+      setUploadingAvatar(true);
+      const response = await authAPI.uploadAvatar(file);
+      if (response.success) {
+        setAvatarPreview(response.data.avatar);
+        toast({ title: 'Success', description: 'Avatar updated successfully' });
+        // Refresh user data in context
+        await updateProfile({});
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Failed to upload avatar', variant: 'destructive' });
+      setAvatarPreview(user?.avatar || null);
+    } finally {
+      setUploadingAvatar(false);
+      // Reset input so same file can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const handleProfileSave = async () => {
     try {
@@ -68,22 +116,55 @@ const Settings: React.FC = () => {
         <p className="text-muted-foreground mt-1">Manage your account and preferences</p>
       </div>
 
-      {/* Profile Card */}
+      {/* Profile Card with Avatar Upload */}
       <div className="bg-card rounded-xl border border-border p-6 shadow-card flex items-center gap-5">
-        <div className="relative">
-          <div className="w-20 h-20 rounded-full gradient-hero flex items-center justify-center">
-            <span className="text-2xl font-bold text-primary-foreground">
-              {user?.firstName?.charAt(0).toUpperCase()}{user?.lastName?.charAt(0).toUpperCase()}
-            </span>
-          </div>
-          <button className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md">
-            <Camera className="w-3.5 h-3.5" />
+        <div className="relative group">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            className="hidden"
+            onChange={handleAvatarChange}
+          />
+
+          {avatarPreview ? (
+            <img
+              src={avatarPreview}
+              alt="Avatar"
+              className="w-20 h-20 rounded-full object-cover border-2 border-border"
+            />
+          ) : (
+            <div className="w-20 h-20 rounded-full gradient-hero flex items-center justify-center">
+              <span className="text-2xl font-bold text-primary-foreground">
+                {user?.firstName?.charAt(0).toUpperCase()}{user?.lastName?.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
+
+          {/* Overlay on hover */}
+          <button
+            onClick={handleAvatarClick}
+            disabled={uploadingAvatar}
+            className="absolute inset-0 rounded-full bg-foreground/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+          >
+            {uploadingAvatar ? (
+              <Loader2 className="w-5 h-5 text-white animate-spin" />
+            ) : (
+              <Camera className="w-5 h-5 text-white" />
+            )}
           </button>
+
+          {/* Small badge */}
+          <span className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md pointer-events-none">
+            <Upload className="w-3.5 h-3.5" />
+          </span>
         </div>
+
         <div>
           <p className="text-lg font-semibold text-foreground">{user?.firstName} {user?.lastName}</p>
           <p className="text-sm text-muted-foreground">{user?.email}</p>
           <p className="text-xs text-muted-foreground capitalize mt-0.5">{user?.role}</p>
+          <p className="text-xs text-muted-foreground mt-1">Click avatar to upload a new photo</p>
         </div>
       </div>
 

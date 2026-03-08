@@ -1,4 +1,5 @@
 import { Notification } from '../models/Notification.js';
+import { emitToUser, emitToUsers } from '../socket.js';
 
 export class NotificationService {
   /**
@@ -14,6 +15,7 @@ export class NotificationService {
       metadata,
     });
     await notification.save();
+    emitToUser(recipient, 'notification:new', notification);
     return notification;
   }
 
@@ -29,7 +31,9 @@ export class NotificationService {
       link,
       metadata,
     }));
-    return await Notification.insertMany(notifications);
+    const result = await Notification.insertMany(notifications);
+    emitToUsers(recipientIds, 'notification:new', { bulk: true, count: recipientIds.length });
+    return result;
   }
 
   /**

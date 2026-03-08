@@ -283,71 +283,91 @@ const CoursePlayer: React.FC = () => {
                 </div>
               </div>
 
-              {/* Lesson detail */}
-              <LessonContent lesson={currentLesson} />
+              {/* Tab switcher */}
+              <div className="flex border-b border-border px-6 lg:px-8">
+                <button
+                  onClick={() => setActiveTab('content')}
+                  className={cn(
+                    'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px',
+                    activeTab === 'content'
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  <BookOpen className="w-4 h-4" /> Lesson
+                </button>
+                <button
+                  onClick={() => setActiveTab('discussion')}
+                  className={cn(
+                    'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px',
+                    activeTab === 'discussion'
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  <MessageSquare className="w-4 h-4" /> Discussion
+                </button>
+              </div>
 
-              {/* Mark Complete + Navigation */}
-              {(() => {
-                const allLessons = getAllLessons(modules);
-                const currentIndex = allLessons.findIndex((l: any) => l._id === currentLesson._id);
-                const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
-                const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
-                const isCompleted = completedLessons.has(currentLesson._id);
+              {activeTab === 'content' ? (
+                <>
+                  {/* Lesson detail */}
+                  <LessonContent lesson={currentLesson} />
 
-                return (
-                  <div className="px-6 lg:px-8 pb-6 space-y-4">
-                    {/* Mark as Complete */}
-                    <div className="flex justify-center">
-                      <Button
-                        variant={isCompleted ? 'outline' : 'success'}
-                        size="lg"
-                        disabled={isCompleted}
-                        onClick={handleMarkComplete}
-                        className="w-full sm:w-auto"
-                      >
-                        <CheckCircle className="w-5 h-5 mr-2" />
-                        {isCompleted ? 'Completed' : 'Mark as Complete & Continue'}
-                      </Button>
-                    </div>
+                  {/* Mark Complete + Navigation */}
+                  {(() => {
+                    const allLessons = getAllLessons(modules);
+                    const currentIndex = allLessons.findIndex((l: any) => l._id === currentLesson._id);
+                    const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
+                    const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
+                    const isCompleted = completedLessons.has(currentLesson._id);
 
-                    {/* Prev / Next */}
-                    <div className="flex items-center justify-between gap-4">
-                    {prevLesson ? (
-                      <Button
-                        variant="outline"
-                        onClick={() => setCurrentLesson(prevLesson)}
-                        className="flex items-center gap-2"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                        <div className="text-left hidden sm:block">
-                          <div className="text-xs text-muted-foreground">Previous</div>
-                          <div className="text-sm font-medium truncate max-w-[180px]">{prevLesson.title}</div>
+                    return (
+                      <div className="px-6 lg:px-8 pb-6 space-y-4">
+                        <div className="flex justify-center">
+                          <Button
+                            variant={isCompleted ? 'outline' : 'success'}
+                            size="lg"
+                            disabled={isCompleted}
+                            onClick={handleMarkComplete}
+                            className="w-full sm:w-auto"
+                          >
+                            <CheckCircle className="w-5 h-5 mr-2" />
+                            {isCompleted ? 'Completed' : 'Mark as Complete & Continue'}
+                          </Button>
                         </div>
-                        <span className="sm:hidden text-sm">Previous</span>
-                      </Button>
-                    ) : (
-                      <div />
-                    )}
-                    {nextLesson ? (
-                      <Button
-                        variant="hero"
-                        onClick={() => setCurrentLesson(nextLesson)}
-                        className="flex items-center gap-2"
-                      >
-                        <div className="text-left hidden sm:block">
-                          <div className="text-xs opacity-80">Next</div>
-                          <div className="text-sm font-medium truncate max-w-[180px]">{nextLesson.title}</div>
+
+                        <div className="flex items-center justify-between gap-4">
+                          {prevLesson ? (
+                            <Button variant="outline" onClick={() => setCurrentLesson(prevLesson)} className="flex items-center gap-2">
+                              <ChevronLeft className="w-4 h-4" />
+                              <div className="text-left hidden sm:block">
+                                <div className="text-xs text-muted-foreground">Previous</div>
+                                <div className="text-sm font-medium truncate max-w-[180px]">{prevLesson.title}</div>
+                              </div>
+                              <span className="sm:hidden text-sm">Previous</span>
+                            </Button>
+                          ) : <div />}
+                          {nextLesson ? (
+                            <Button variant="hero" onClick={() => setCurrentLesson(nextLesson)} className="flex items-center gap-2">
+                              <div className="text-left hidden sm:block">
+                                <div className="text-xs opacity-80">Next</div>
+                                <div className="text-sm font-medium truncate max-w-[180px]">{nextLesson.title}</div>
+                              </div>
+                              <span className="sm:hidden text-sm">Next</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </Button>
+                          ) : <div />}
                         </div>
-                        <span className="sm:hidden text-sm">Next</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </Button>
-                    ) : (
-                      <div />
-                    )}
-                    </div>
-                  </div>
-                );
-              })()}
+                      </div>
+                    );
+                  })()}
+                </>
+              ) : (
+                <div className="px-6 lg:px-8 py-6">
+                  {courseId && <CourseDiscussion courseId={courseId} />}
+                </div>
+              )}
             </>
           ) : (
             <CourseWelcome

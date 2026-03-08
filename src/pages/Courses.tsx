@@ -1,19 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Search,
-  Filter,
-  BookOpen,
-  Users,
-  Clock,
-  Star,
-  ArrowLeft
-} from 'lucide-react';
+import { Search, BookOpen, ArrowLeft, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import CourseCard from '@/components/courses/CourseCard';
+import CourseCard, { ComingSoonCard } from '@/components/courses/CourseCard';
 import { useAuth } from '@/store/AuthContext';
 import { courseAPI, enrollmentAPI } from '@/lib/apiClient';
 import { useToast } from '@/hooks/use-toast';
@@ -22,18 +13,21 @@ interface Course {
   _id: string;
   title: string;
   description: string;
-  thumbnail?: string;
+  thumbnail?: string | null;
+  thumbnail_url?: string | null;
+  cover_image?: string | null;
   instructor: {
     _id: string;
     firstName: string;
     lastName: string;
   };
   category: string;
-  level: 'Beginner' | 'Intermediate' | 'Advanced';
-  duration: string;
+  level: string;
+  duration?: number | null;
   enrollmentCount: number;
-  rating: number;
-  price?: number;
+  rating?: number | null;
+  ratingCount?: number;
+  price?: number | null;
   status: string;
 }
 
@@ -57,9 +51,7 @@ const Courses: React.FC = () => {
 
   useEffect(() => {
     fetchCourses();
-    if (user) {
-      fetchEnrollments();
-    }
+    if (user) fetchEnrollments();
   }, [user]);
 
   const fetchCourses = async () => {
@@ -68,12 +60,8 @@ const Courses: React.FC = () => {
       if (response.success) {
         setCourses(response.data.courses || []);
       }
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: 'Failed to load courses',
-        variant: 'destructive',
-      });
+    } catch {
+      toast({ title: 'Error', description: 'Failed to load courses', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -82,41 +70,24 @@ const Courses: React.FC = () => {
   const fetchEnrollments = async () => {
     try {
       const response = await enrollmentAPI.getMyEnrollments();
-      if (response.success) {
-        setEnrollments(response.data.enrollments || []);
-      }
-    } catch (error: any) {
-      // Enrollments might not exist yet, continue
+      if (response.success) setEnrollments(response.data.enrollments || []);
+    } catch {
+      // ok
     }
   };
 
   const handleEnroll = async (courseId: string) => {
-    // Add course to enrolling set
     setEnrollingCourses(prev => new Set(prev).add(courseId));
-
     try {
       const response = await enrollmentAPI.enrollCourse(courseId);
       if (response.success) {
-        toast({
-          title: 'Registration Successful!',
-          description: response.message || 'Your enrollment request has been submitted for approval.',
-        });
-        // Refresh enrollments
+        toast({ title: 'Enrollment Successful!', description: response.message || 'Your enrollment request has been submitted.' });
         fetchEnrollments();
       }
     } catch (error: any) {
-      toast({
-        title: 'Registration Failed',
-        description: error.message || 'Failed to register for course. Please try again.',
-        variant: 'destructive',
-      });
+      toast({ title: 'Enrollment Failed', description: error.message || 'Please try again.', variant: 'destructive' });
     } finally {
-      // Remove course from enrolling set
-      setEnrollingCourses(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(courseId);
-        return newSet;
-      });
+      setEnrollingCourses(prev => { const s = new Set(prev); s.delete(courseId); return s; });
     }
   };
 
@@ -127,15 +98,18 @@ const Courses: React.FC = () => {
 
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         course.description.toLowerCase().includes(searchTerm.toLowerCase());
+      course.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === 'all' || course.category === categoryFilter;
-    const matchesLevel = levelFilter === 'all' || course.level === levelFilter;
-
+    const matchesLevel = levelFilter === 'all' || course.level.toLowerCase() === levelFilter.toLowerCase();
     return matchesSearch && matchesCategory && matchesLevel;
   });
 
-  const categories = [...new Set(courses.map(course => course.category))];
+  const categories = [...new Set(courses.map(c => c.category))];
   const levels = ['Beginner', 'Intermediate', 'Advanced'];
+  const isSmallCatalog = courses.length < 10;
+  const showComingSoon = filteredCourses.length > 0 && filteredCourses.length < 6;
+
+  const getThumbnail = (c: Course) => c.thumbnail || c.thumbnail_url || c.cover_image || null;
 
   if (loading) {
     return (
@@ -143,7 +117,7 @@ const Courses: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
-              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
               <p className="text-muted-foreground">Loading courses...</p>
             </div>
           </div>
@@ -157,54 +131,70 @@ const Courses: React.FC = () => {
       {/* Header */}
       <header className="bg-card border-b border-border">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-4 mb-4">
             <Button variant="ghost" size="icon" asChild>
-              <Link to="/">
-                <ArrowLeft className="w-5 h-5" />
-              </Link>
+              <Link to="/"><ArrowLeft className="w-5 h-5" /></Link>
             </Button>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">Courses</h1>
-              <p className="text-muted-foreground">Discover and enroll in our courses</p>
+              <p className="text-muted-foreground text-sm">
+                {filteredCourses.length > 0
+                  ? `Showing ${filteredCourses.length} course${filteredCourses.length !== 1 ? 's' : ''}`
+                  : 'Discover and enroll in our courses'}
+              </p>
             </div>
           </div>
 
-          {/* Search and Filters */}
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input
-                placeholder="Search courses..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+          {/* Filters — compact for small catalogs, full for large */}
+          {isSmallCatalog ? (
+            <div className="flex items-center gap-3 flex-wrap">
+              <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger className="w-auto min-w-[140px] h-9 text-sm">
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={levelFilter} onValueChange={setLevelFilter}>
+                <SelectTrigger className="w-auto min-w-[130px] h-9 text-sm">
+                  <SelectValue placeholder="All Levels" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Levels</SelectItem>
+                  {levels.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              {(categoryFilter !== 'all' || levelFilter !== 'all') && (
+                <Button variant="ghost" size="sm" onClick={() => { setCategoryFilter('all'); setLevelFilter('all'); }}>
+                  Clear
+                </Button>
+              )}
             </div>
-
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="All Categories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map(category => (
-                  <SelectItem key={category} value={category}>{category}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={levelFilter} onValueChange={setLevelFilter}>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="All Levels" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Levels</SelectItem>
-                {levels.map(level => (
-                  <SelectItem key={level} value={level}>{level}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          ) : (
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Input placeholder="Search courses..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
+              </div>
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger className="w-full md:w-48"><SelectValue placeholder="All Categories" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={levelFilter} onValueChange={setLevelFilter}>
+                <SelectTrigger className="w-full md:w-48"><SelectValue placeholder="All Levels" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Levels</SelectItem>
+                  {levels.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
       </header>
 
@@ -220,74 +210,41 @@ const Courses: React.FC = () => {
                 : 'No courses are available at the moment'}
             </p>
             {(searchTerm || categoryFilter !== 'all' || levelFilter !== 'all') && (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setSearchTerm('');
-                  setCategoryFilter('all');
-                  setLevelFilter('all');
-                }}
-              >
+              <Button variant="outline" onClick={() => { setSearchTerm(''); setCategoryFilter('all'); setLevelFilter('all'); }}>
                 Clear Filters
               </Button>
             )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCourses.map((course) => {
-              const enrollmentStatus = getEnrollmentStatus(course._id);
-
+            {filteredCourses.map(course => {
+              const status = getEnrollmentStatus(course._id);
               return (
-                <div key={course._id} className="relative">
-                  <CourseCard
-                    course={{
-                      id: course._id,
-                      title: course.title,
-                      description: course.description,
-                      thumbnail: course.thumbnail,
-                      instructor: `${course.instructor.firstName} ${course.instructor.lastName}`,
-                      duration: course.duration || '0h',
-                      students: course.enrollmentCount,
-                      rating: course.rating || 0,
-                      category: course.category,
-                      level: course.level,
-                    }}
-                    variant={enrollmentStatus === 'active' ? 'enrolled' : 'default'}
-                  />
-
-                  {/* Enrollment Status Overlay */}
-                  {enrollmentStatus && (
-                    <div className="absolute top-3 right-3">
-                      <Badge
-                        className={
-                          enrollmentStatus === 'active'
-                            ? 'bg-green-100 text-green-800'
-                            : enrollmentStatus === 'pending_approval'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-red-100 text-red-800'
-                        }
-                      >
-                        {enrollmentStatus === 'active' ? 'Enrolled' :
-                         enrollmentStatus === 'pending_approval' ? 'Pending' :
-                         enrollmentStatus === 'rejected' ? 'Rejected' : enrollmentStatus}
-                      </Badge>
-                    </div>
-                  )}
-
-                  {/* Enroll Button */}
-                  {(!enrollmentStatus || enrollmentStatus === 'rejected') && user?.role === 'student' && (
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <Button
-                        className="w-full"
-                        onClick={() => handleEnroll(course._id)}
-                      >
-                        Register for Course
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                <CourseCard
+                  key={course._id}
+                  course={{
+                    id: course._id,
+                    title: course.title,
+                    description: course.description,
+                    thumbnail: getThumbnail(course),
+                    instructor: `${course.instructor?.firstName || ''} ${course.instructor?.lastName || ''}`.trim() || 'Instructor',
+                    duration: course.duration,
+                    students: course.enrollmentCount || 0,
+                    rating: course.rating,
+                    ratingCount: course.ratingCount || 0,
+                    category: course.category,
+                    level: course.level,
+                    price: course.price,
+                  }}
+                  variant={status === 'active' ? 'enrolled' : 'default'}
+                  enrollmentStatus={status}
+                  enrolling={enrollingCourses.has(course._id)}
+                  onEnroll={() => handleEnroll(course._id)}
+                  isStudent={user?.role === 'student'}
+                />
               );
             })}
+            {showComingSoon && <ComingSoonCard />}
           </div>
         )}
       </main>

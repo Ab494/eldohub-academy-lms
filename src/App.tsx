@@ -92,10 +92,10 @@ const App = () => (
 
             {/* Settings & Help */}
             <Route path="/settings" element={<DashboardLayout />}>
-              <Route index element={<StudentDashboard />} />
+              <Route index element={<Settings />} />
             </Route>
             <Route path="/help" element={<DashboardLayout />}>
-              <Route index element={<StudentDashboard />} />
+              <Route index element={<Settings />} />
             </Route>
 
             {/* Catch All */}

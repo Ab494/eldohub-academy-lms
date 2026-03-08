@@ -45,6 +45,23 @@ export class EnrollmentService {
         courseName: course.title,
       });
     }
+
+    // Create notification for all admins
+    try {
+      const { User } = await import('../models/User.js');
+      const admins = await User.find({ role: 'admin', isActive: true }).select('_id');
+      const adminIds = admins.map((a) => a._id);
+      if (adminIds.length > 0) {
+        await NotificationService.notifyNewEnrollmentRequest(
+          adminIds,
+          userName || 'A student',
+          course.title,
+          enrollment._id
+        );
+      }
+    } catch (err) {
+      console.error('Failed to send enrollment request notification to admins:', err);
+    }
     // Don't update course enrollment count until approved
     // course.enrollmentCount += 1;
     // await course.save();

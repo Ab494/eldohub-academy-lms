@@ -4,16 +4,21 @@ import { asyncHandler, AppError } from '../utils/errorHandler.js';
 // Get all top-level posts for a course
 export const getPosts = asyncHandler(async (req, res) => {
   const { courseId } = req.params;
-  const { page = 1, limit = 20 } = req.query;
+  const { page = 1, limit = 20, search } = req.query;
   const skip = (parseInt(page) - 1) * parseInt(limit);
 
+  const filter = { course: courseId, parentPost: null };
+  if (search && search.trim()) {
+    filter.content = { $regex: search.trim(), $options: 'i' };
+  }
+
   const [posts, total] = await Promise.all([
-    DiscussionPost.find({ course: courseId, parentPost: null })
+    DiscussionPost.find(filter)
       .populate('author', 'firstName lastName role')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit)),
-    DiscussionPost.countDocuments({ course: courseId, parentPost: null }),
+    DiscussionPost.countDocuments(filter),
   ]);
 
   res.status(200).json({

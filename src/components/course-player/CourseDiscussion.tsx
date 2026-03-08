@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   MessageSquare,
   Send,
@@ -9,9 +9,12 @@ import {
   Loader2,
   Shield,
   Reply,
+  Search,
+  X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { discussionAPI } from '@/lib/apiClient';
@@ -65,11 +68,16 @@ const CourseDiscussion: React.FC<CourseDiscussionProps> = ({ courseId }) => {
   const [submitting, setSubmitting] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
+  const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
 
-  const fetchPosts = useCallback(async (p = 1) => {
+  const fetchPosts = useCallback(async (p = 1, search = activeSearch) => {
     try {
       setLoading(true);
-      const res = await discussionAPI.getPosts(courseId, { page: String(p), limit: '15' });
+      const params: Record<string, string> = { page: String(p), limit: '15' };
+      if (search.trim()) params.search = search.trim();
+      const res = await discussionAPI.getPosts(courseId, params);
       if (res.success) {
         setPosts(res.data.posts);
         setTotalPages(res.data.pages);
@@ -80,11 +88,27 @@ const CourseDiscussion: React.FC<CourseDiscussionProps> = ({ courseId }) => {
     } finally {
       setLoading(false);
     }
-  }, [courseId, toast]);
+  }, [courseId, toast, activeSearch]);
 
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
+
+  // Debounced search
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    searchTimeout.current = setTimeout(() => {
+      setActiveSearch(value);
+      fetchPosts(1, value);
+    }, 400);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setActiveSearch('');
+    fetchPosts(1, '');
+  };
 
   const handleSubmitPost = async () => {
     if (!newPost.trim()) return;
@@ -136,6 +160,22 @@ const CourseDiscussion: React.FC<CourseDiscussionProps> = ({ courseId }) => {
         </div>
       </div>
 
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          placeholder="Search discussions…"
+          value={searchQuery}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          className="pl-9 pr-9"
+        />
+        {searchQuery && (
+          <button onClick={clearSearch} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+
       {/* Posts */}
       {loading ? (
         <div className="flex items-center justify-center py-12">
@@ -144,8 +184,12 @@ const CourseDiscussion: React.FC<CourseDiscussionProps> = ({ courseId }) => {
       ) : posts.length === 0 ? (
         <div className="text-center py-12">
           <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-          <p className="text-muted-foreground font-medium">No discussions yet</p>
-          <p className="text-sm text-muted-foreground mt-1">Be the first to start a conversation!</p>
+          <p className="text-muted-foreground font-medium">
+            {activeSearch ? 'No posts match your search' : 'No discussions yet'}
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {activeSearch ? 'Try different keywords' : 'Be the first to start a conversation!'}
+          </p>
         </div>
       ) : (
         <div className="space-y-4">

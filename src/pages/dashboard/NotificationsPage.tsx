@@ -32,6 +32,7 @@ interface Notification {
 const typeIcons: Record<string, React.ElementType> = {
   enrollment_approved: CheckCheck,
   enrollment_rejected: XCircle,
+  new_enrollment_request: BookOpen,
   new_course_content: BookOpen,
   assignment_graded: FileText,
   certificate_issued: Award,
@@ -42,6 +43,7 @@ const typeIcons: Record<string, React.ElementType> = {
 const typeColors: Record<string, string> = {
   enrollment_approved: 'text-green-600 bg-green-100',
   enrollment_rejected: 'text-red-600 bg-red-100',
+  new_enrollment_request: 'text-orange-600 bg-orange-100',
   new_course_content: 'text-blue-600 bg-blue-100',
   assignment_graded: 'text-purple-600 bg-purple-100',
   certificate_issued: 'text-amber-600 bg-amber-100',
@@ -52,6 +54,7 @@ const typeColors: Record<string, string> = {
 const typeLabels: Record<string, string> = {
   enrollment_approved: 'Enrollment',
   enrollment_rejected: 'Enrollment',
+  new_enrollment_request: 'New Enrollment',
   new_course_content: 'Course Update',
   assignment_graded: 'Assignment',
   certificate_issued: 'Certificate',

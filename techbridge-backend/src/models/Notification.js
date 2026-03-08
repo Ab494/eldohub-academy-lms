@@ -13,6 +13,7 @@ const notificationSchema = new mongoose.Schema(
       enum: [
         'enrollment_approved',
         'enrollment_rejected',
+        'new_enrollment_request',
         'new_course_content',
         'assignment_graded',
         'certificate_issued',

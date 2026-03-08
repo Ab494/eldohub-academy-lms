@@ -160,4 +160,14 @@ export class NotificationService {
       metadata: { courseId },
     });
   }
+
+  static async notifyNewEnrollmentRequest(adminIds, studentName, courseName, enrollmentId) {
+    return this.createBulk(adminIds, {
+      type: 'new_enrollment_request',
+      title: 'New Enrollment Request',
+      message: `${studentName} has requested to enroll in "${courseName}". Review and approve or reject.`,
+      link: `/admin/approvals`,
+      metadata: { enrollmentId },
+    });
+  }
 }

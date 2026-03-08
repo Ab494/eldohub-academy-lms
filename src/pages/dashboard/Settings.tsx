@@ -261,6 +261,31 @@ const Settings: React.FC = () => {
           </div>
         </TabsContent>
 
+        <TabsContent value="notifications" className="mt-6">
+          <div className="bg-card rounded-xl border border-border p-6 shadow-card space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <Bell className="w-5 h-5" />
+                Email Notifications
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">Choose which emails you'd like to receive</p>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-b border-border">
+              <div className="space-y-0.5">
+                <p className="text-sm font-medium text-foreground">Discussion replies</p>
+                <p className="text-xs text-muted-foreground">Get notified when someone replies to your discussion posts</p>
+              </div>
+              <Switch checked={discussionReplies} onCheckedChange={setDiscussionReplies} />
+            </div>
+
+            <Button onClick={handleNotificationsSave} disabled={savingNotifications} className="gap-2">
+              {savingNotifications ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Save Preferences
+            </Button>
+          </div>
+        </TabsContent>
+
         <TabsContent value="security" className="mt-6">
           <div className="bg-card rounded-xl border border-border p-6 shadow-card space-y-5">
             <div className="space-y-2">

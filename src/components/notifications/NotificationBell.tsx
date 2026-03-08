@@ -21,6 +21,8 @@ import {
 import { cn } from '@/lib/utils';
 import { notificationAPI } from '@/lib/apiClient';
 import { useAuth } from '@/store/AuthContext';
+import { useSocket } from '@/hooks/useSocket';
+import { useToast } from '@/hooks/use-toast';
 
 interface Notification {
   _id: string;
@@ -66,6 +68,7 @@ function timeAgo(dateStr: string): string {
 
 const NotificationBell: React.FC = () => {
   const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -97,11 +100,24 @@ const NotificationBell: React.FC = () => {
     }
   }, [isAuthenticated]);
 
-  // Poll unread count every 30s
+  // Listen for real-time notifications via WebSocket
+  useSocket({
+    'notification:new': (data: any) => {
+      // If it's a single notification object, prepend it
+      if (data && data._id) {
+        setNotifications((prev) => [data, ...prev].slice(0, 20));
+        setUnreadCount((prev) => prev + 1);
+        toast({ title: data.title, description: data.message });
+      } else {
+        // Bulk notification – just refresh the count
+        fetchUnreadCount();
+      }
+    },
+  });
+
+  // Initial fetch on mount
   useEffect(() => {
     fetchUnreadCount();
-    const interval = setInterval(fetchUnreadCount, 30000);
-    return () => clearInterval(interval);
   }, [fetchUnreadCount]);
 
   // Fetch full list when popover opens

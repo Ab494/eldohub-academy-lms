@@ -177,14 +177,14 @@ const Help: React.FC = () => {
                 className="bg-card rounded-lg border border-border px-4 shadow-card"
               >
                 <AccordionTrigger className="text-left font-medium text-foreground hover:no-underline py-4">
-                  <div className="flex items-start gap-3">
-                    <span className="text-sm px-2 py-0.5 rounded bg-muted text-muted-foreground">
+                  <div className="flex items-start gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+                    <span className="text-xs sm:text-sm px-2 py-0.5 rounded bg-muted text-muted-foreground shrink-0">
                       {item.category}
                     </span>
-                    <span>{item.question}</span>
+                    <span className="text-sm sm:text-base">{item.question}</span>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-4 pl-20">
+                <AccordionContent className="text-muted-foreground pb-4 pl-0 sm:pl-20">
                   {item.answer}
                 </AccordionContent>
               </AccordionItem>

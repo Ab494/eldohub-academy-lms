@@ -196,7 +196,7 @@ const AdminUsers: React.FC = () => {
       </div>
 
       {/* Users Table */}
-      <div className="bg-card rounded-lg border border-border">
+      <div className="bg-card rounded-lg border border-border overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

@@ -1,7 +1,20 @@
 import express from 'express';
 import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
 import { errorHandler } from './utils/errorHandler.js';
 import { config } from './config/index.js';
+
+// Create uploads directories if they don't exist
+const uploadsDir = path.join(process.cwd(), 'uploads');
+const avatarsDir = path.join(uploadsDir, 'avatars');
+const thumbnailsDir = path.join(uploadsDir, 'thumbnails');
+
+[uploadsDir, avatarsDir, thumbnailsDir].forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
 
 // Routes
 import authRoutes from './routes/authRoutes.js';

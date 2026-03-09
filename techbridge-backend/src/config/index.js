@@ -36,6 +36,9 @@ export const config = {
   
   // Frontend
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:8080',
+  
+  // Backend URL for serving uploaded files
+  backendUrl: process.env.BACKEND_URL || 'http://localhost:5000',
 };
 
 // Validate critical configs

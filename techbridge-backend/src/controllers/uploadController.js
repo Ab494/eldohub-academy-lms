@@ -7,7 +7,7 @@ export const uploadAvatar = asyncHandler(async (req, res) => {
     throw new AppError('No file uploaded', 400);
   }
 
-  const avatarUrl = `${config.backendUrl || ''}/uploads/avatars/${req.file.filename}`;
+  const avatarUrl = `/uploads/avatars/${req.file.filename}`;
 
   const user = await User.findByIdAndUpdate(
     req.userId,

@@ -34,7 +34,7 @@ export function initSocket(httpServer) {
     if (!token) return next(new Error('Authentication required'));
 
     try {
-      const decoded = jwt.verify(token, config.jwtSecret);
+      const decoded = jwt.verify(token, config.jwt.accessSecret);
       socket.userId = decoded.userId || decoded.id;
       socket.userRole = decoded.role || null;
       next();

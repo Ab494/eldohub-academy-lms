@@ -106,27 +106,28 @@ const StudentCourses: React.FC = () => {
         </div>
       ) : (
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="active" className="relative">
-              Active
+          <TabsList className="grid w-full grid-cols-3 h-auto">
+            <TabsTrigger value="active" className="relative text-xs sm:text-sm px-2 py-2 gap-1 flex-wrap">
+              <span>Active</span>
               {activeEnrollments.length > 0 && (
-                <Badge className="ml-2 bg-green-100 text-green-800">
+                <Badge className="bg-green-100 text-green-800 text-[10px] px-1.5 py-0">
                   {activeEnrollments.length}
                 </Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="pending" className="relative">
-              Pending Approval
+            <TabsTrigger value="pending" className="relative text-xs sm:text-sm px-2 py-2 gap-1 flex-wrap">
+              <span className="hidden sm:inline">Pending Approval</span>
+              <span className="sm:hidden">Pending</span>
               {pendingEnrollments.length > 0 && (
-                <Badge className="ml-2 bg-yellow-100 text-yellow-800">
+                <Badge className="bg-yellow-100 text-yellow-800 text-[10px] px-1.5 py-0">
                   {pendingEnrollments.length}
                 </Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="rejected" className="relative">
-              Rejected
+            <TabsTrigger value="rejected" className="relative text-xs sm:text-sm px-2 py-2 gap-1 flex-wrap">
+              <span>Rejected</span>
               {rejectedEnrollments.length > 0 && (
-                <Badge className="ml-2 bg-red-100 text-red-800">
+                <Badge className="bg-red-100 text-red-800 text-[10px] px-1.5 py-0">
                   {rejectedEnrollments.length}
                 </Badge>
               )}
@@ -178,20 +179,20 @@ const StudentCourses: React.FC = () => {
             ) : (
               <div className="grid gap-6">
                 {pendingEnrollments.map((enrollment) => (
-                  <div key={enrollment._id} className="bg-card rounded-xl border border-border p-6 shadow-card">
-                    <div className="flex items-center justify-between mb-4">
+                  <div key={enrollment._id} className="bg-card rounded-xl border border-border p-4 sm:p-6 shadow-card">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                       <div>
-                        <h3 className="text-lg font-semibold text-foreground">{enrollment.course.title}</h3>
-                        <p className="text-muted-foreground">
+                        <h3 className="text-base sm:text-lg font-semibold text-foreground">{enrollment.course.title}</h3>
+                        <p className="text-sm text-muted-foreground">
                           by {enrollment.course.instructor
                             ? `${enrollment.course.instructor.firstName} ${enrollment.course.instructor.lastName}`
                             : 'Unknown Instructor'}
                         </p>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                           Requested on {new Date(enrollment.enrollmentDate).toLocaleDateString()}
                         </p>
                       </div>
-                      <Badge className="bg-yellow-100 text-yellow-800">Pending Approval</Badge>
+                      <Badge className="bg-yellow-100 text-yellow-800 self-start">Pending Approval</Badge>
                     </div>
                     <p className="text-muted-foreground">
                       Your enrollment request is being reviewed by the instructor. You'll be notified once it's approved.
@@ -214,20 +215,20 @@ const StudentCourses: React.FC = () => {
             ) : (
               <div className="grid gap-6">
                 {rejectedEnrollments.map((enrollment) => (
-                  <div key={enrollment._id} className="bg-card rounded-xl border border-border p-6 shadow-card">
-                    <div className="flex items-center justify-between mb-4">
+                  <div key={enrollment._id} className="bg-card rounded-xl border border-border p-4 sm:p-6 shadow-card">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                       <div>
-                        <h3 className="text-lg font-semibold text-foreground">{enrollment.course.title}</h3>
-                        <p className="text-muted-foreground">
+                        <h3 className="text-base sm:text-lg font-semibold text-foreground">{enrollment.course.title}</h3>
+                        <p className="text-sm text-muted-foreground">
                           by {enrollment.course.instructor
                             ? `${enrollment.course.instructor.firstName} ${enrollment.course.instructor.lastName}`
                             : 'Unknown Instructor'}
                         </p>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                           Rejected on {new Date(enrollment.enrollmentDate).toLocaleDateString()}
                         </p>
                       </div>
-                      <Badge className="bg-red-100 text-red-800">Rejected</Badge>
+                      <Badge className="bg-red-100 text-red-800 self-start">Rejected</Badge>
                     </div>
                     <p className="text-muted-foreground mb-4">
                       Your enrollment request was not approved. You can try enrolling again or contact the instructor.

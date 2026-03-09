@@ -4,10 +4,13 @@ import { config } from './config/index.js';
 
 let io = null;
 const onlineUsers = new Set();
+let broadcastInterval = null;
 
 function broadcastOnlineCount() {
   if (io) {
-    io.to('role:admin').emit('online:count', { count: onlineUsers.size });
+    const count = onlineUsers.size;
+    io.to('role:admin').emit('online:count', { count });
+    console.log(`[Socket] Broadcasting online count: ${count}`);
   }
 }
 
@@ -15,16 +18,24 @@ function broadcastOnlineCount() {
  * Initialize Socket.IO on an existing HTTP server
  */
 export function initSocket(httpServer) {
+  // Get frontend URL from config - this should be set in Render env vars
+  const frontendUrl = config.frontendUrl;
+  
+  // Build CORS origins array - include all common development and production URLs
+  const corsOrigins = [
+    'http://localhost:8080',
+    'http://localhost:5173',
+    'http://127.0.0.1:8080',
+    'http://127.0.0.1:5173',
+    // Include the configured frontend URL (should be set via FRONTEND_URL env var)
+    frontendUrl,
+  ].filter(Boolean);
+  
   io = new Server(httpServer, {
     cors: {
-      origin: [
-        'http://localhost:8080',
-        'http://localhost:5173',
-        'http://127.0.0.1:8080',
-        'http://127.0.0.1:5173',
-        config.frontendUrl,
-      ].filter(Boolean),
+      origin: corsOrigins,
       credentials: true,
+      methods: ['GET', 'POST'],
     },
   });
 
@@ -44,6 +55,8 @@ export function initSocket(httpServer) {
   });
 
   io.on('connection', (socket) => {
+    console.log(`[Socket] User connected: ${socket.userId} (role: ${socket.userRole})`);
+    
     // Join personal room
     if (socket.userId) {
       socket.join(`user:${socket.userId}`);
@@ -55,11 +68,13 @@ export function initSocket(httpServer) {
       socket.join('role:admin');
       // Send current count immediately to the newly connected admin
       socket.emit('online:count', { count: onlineUsers.size });
+      console.log(`[Socket] Admin connected, sent count: ${onlineUsers.size}`);
     }
 
     broadcastOnlineCount();
 
     socket.on('disconnect', () => {
+      console.log(`[Socket] User disconnected: ${socket.userId}`);
       if (socket.userId) {
         // Only remove if no other sockets for this user
         const sockets = io.sockets.sockets;
@@ -77,6 +92,11 @@ export function initSocket(httpServer) {
       broadcastOnlineCount();
     });
   });
+
+  // Start periodic broadcast every 30 seconds
+  broadcastInterval = setInterval(() => {
+    broadcastOnlineCount();
+  }, 30000);
 
   return io;
 }

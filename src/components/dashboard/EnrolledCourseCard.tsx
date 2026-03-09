@@ -28,11 +28,11 @@ const EnrolledCourseCard: React.FC<EnrolledCourseCardProps> = ({ course, onConti
 
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/20">
-      <CardContent className="p-6">
-        <div className="flex gap-4">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row gap-4">
           {/* Course Thumbnail */}
           <div className="flex-shrink-0">
-            <div className="w-20 h-20 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg flex items-center justify-center">
+            <div className="w-full sm:w-20 h-32 sm:h-20 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg flex items-center justify-center overflow-hidden">
               {course.thumbnail ? (
                 <img
                   src={course.thumbnail}
@@ -40,8 +40,8 @@ const EnrolledCourseCard: React.FC<EnrolledCourseCardProps> = ({ course, onConti
                   className="w-full h-full object-cover rounded-lg"
                 />
               ) : (
-                <div className="w-8 h-8 bg-primary/20 rounded flex items-center justify-center">
-                  <span className="text-primary font-bold text-sm">
+                <div className="w-10 h-10 sm:w-8 sm:h-8 bg-primary/20 rounded flex items-center justify-center">
+                  <span className="text-primary font-bold text-lg sm:text-sm">
                     {course.title.charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -51,25 +51,25 @@ const EnrolledCourseCard: React.FC<EnrolledCourseCardProps> = ({ course, onConti
 
           {/* Course Info */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors text-base sm:text-lg">
                   {course.title}
                 </h3>
 
-                <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-2 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
-                    <User className="w-4 h-4" />
-                    <span>{instructorName}</span>
+                    <User className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{instructorName}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
+                    <Clock className="w-4 h-4 flex-shrink-0" />
                     <span>Enrolled {new Date(course.enrollmentDate).toLocaleDateString()}</span>
                   </div>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="mt-4 space-y-2">
+                <div className="mt-3 sm:mt-4 space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Progress</span>
                     <span className="font-medium text-foreground">{course.progressPercentage}%</span>
@@ -93,10 +93,10 @@ const EnrolledCourseCard: React.FC<EnrolledCourseCardProps> = ({ course, onConti
               </div>
 
               {/* Continue Button */}
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 mt-2 sm:mt-0">
                 <Button
                   onClick={() => onContinue(course._id)}
-                  className="gap-2"
+                  className="gap-2 w-full sm:w-auto"
                   variant={course.progressPercentage === 0 ? "default" : "outline"}
                 >
                   <Play className="w-4 h-4" />

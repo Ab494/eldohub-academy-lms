@@ -174,8 +174,18 @@ const Courses: React.FC = () => {
                   {levels.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
                 </SelectContent>
               </Select>
-              {(categoryFilter !== 'all' || levelFilter !== 'all') && (
-                <Button variant="ghost" size="sm" onClick={() => { setCategoryFilter('all'); setLevelFilter('all'); }}>
+              <Select value={priceFilter} onValueChange={setPriceFilter}>
+                <SelectTrigger className="w-auto min-w-[110px] h-9 text-sm">
+                  <SelectValue placeholder="All Prices" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Prices</SelectItem>
+                  <SelectItem value="free">Free</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                </SelectContent>
+              </Select>
+              {(categoryFilter !== 'all' || levelFilter !== 'all' || priceFilter !== 'all') && (
+                <Button variant="ghost" size="sm" onClick={() => { setCategoryFilter('all'); setLevelFilter('all'); setPriceFilter('all'); }}>
                   Clear
                 </Button>
               )}

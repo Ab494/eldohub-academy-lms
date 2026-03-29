@@ -48,6 +48,7 @@ const Courses: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [levelFilter, setLevelFilter] = useState('all');
+  const [priceFilter, setPriceFilter] = useState('all');
 
   useEffect(() => {
     fetchCourses();

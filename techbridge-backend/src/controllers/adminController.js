@@ -121,7 +121,7 @@ export const getRevenueStats = asyncHandler(async (req, res) => {
     data: {
       total: totalRevenue,
       monthly: monthlyRevenue,
-      currency: 'USD'
+      currency: 'KSh'
     }
   });
 });

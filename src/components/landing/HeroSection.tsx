@@ -29,7 +29,7 @@ const HeroSection: React.FC = () => {
           <div className="animate-fade-in">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-medium text-sm mb-6">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              Now enrolling for 2025 cohort
+              Now enrolling for 2026 cohort
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight mb-6">

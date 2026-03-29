@@ -210,6 +210,14 @@ const Courses: React.FC = () => {
                   {levels.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
                 </SelectContent>
               </Select>
+              <Select value={priceFilter} onValueChange={setPriceFilter}>
+                <SelectTrigger className="w-full md:w-36"><SelectValue placeholder="All Prices" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Prices</SelectItem>
+                  <SelectItem value="free">Free</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           )}
         </div>

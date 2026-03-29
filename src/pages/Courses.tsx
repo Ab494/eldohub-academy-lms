@@ -48,6 +48,7 @@ const Courses: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [levelFilter, setLevelFilter] = useState('all');
+  const [priceFilter, setPriceFilter] = useState('all');
 
   useEffect(() => {
     fetchCourses();
@@ -104,7 +105,10 @@ const Courses: React.FC = () => {
       course.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === 'all' || course.category === categoryFilter;
     const matchesLevel = levelFilter === 'all' || course.level.toLowerCase() === levelFilter.toLowerCase();
-    return matchesSearch && matchesCategory && matchesLevel;
+    const matchesPrice = priceFilter === 'all' ||
+      (priceFilter === 'free' && (!course.price || course.price === 0)) ||
+      (priceFilter === 'paid' && course.price && course.price > 0);
+    return matchesSearch && matchesCategory && matchesLevel && matchesPrice;
   });
 
   const categories = [...new Set(courses.map(c => c.category))];
@@ -170,8 +174,18 @@ const Courses: React.FC = () => {
                   {levels.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
                 </SelectContent>
               </Select>
-              {(categoryFilter !== 'all' || levelFilter !== 'all') && (
-                <Button variant="ghost" size="sm" onClick={() => { setCategoryFilter('all'); setLevelFilter('all'); }}>
+              <Select value={priceFilter} onValueChange={setPriceFilter}>
+                <SelectTrigger className="w-auto min-w-[110px] h-9 text-sm">
+                  <SelectValue placeholder="All Prices" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Prices</SelectItem>
+                  <SelectItem value="free">Free</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                </SelectContent>
+              </Select>
+              {(categoryFilter !== 'all' || levelFilter !== 'all' || priceFilter !== 'all') && (
+                <Button variant="ghost" size="sm" onClick={() => { setCategoryFilter('all'); setLevelFilter('all'); setPriceFilter('all'); }}>
                   Clear
                 </Button>
               )}
@@ -196,6 +210,14 @@ const Courses: React.FC = () => {
                   {levels.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
                 </SelectContent>
               </Select>
+              <Select value={priceFilter} onValueChange={setPriceFilter}>
+                <SelectTrigger className="w-full md:w-36"><SelectValue placeholder="All Prices" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Prices</SelectItem>
+                  <SelectItem value="free">Free</SelectItem>
+                  <SelectItem value="paid">Paid</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           )}
         </div>
@@ -208,12 +230,12 @@ const Courses: React.FC = () => {
             <BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-foreground mb-2">No courses found</h3>
             <p className="text-muted-foreground mb-6">
-              {searchTerm || categoryFilter !== 'all' || levelFilter !== 'all'
+              {searchTerm || categoryFilter !== 'all' || levelFilter !== 'all' || priceFilter !== 'all'
                 ? 'Try adjusting your search or filters'
                 : 'No courses are available at the moment'}
             </p>
-            {(searchTerm || categoryFilter !== 'all' || levelFilter !== 'all') && (
-              <Button variant="outline" onClick={() => { setSearchTerm(''); setCategoryFilter('all'); setLevelFilter('all'); }}>
+            {(searchTerm || categoryFilter !== 'all' || levelFilter !== 'all' || priceFilter !== 'all') && (
+              <Button variant="outline" onClick={() => { setSearchTerm(''); setCategoryFilter('all'); setLevelFilter('all'); setPriceFilter('all'); }}>
                 Clear Filters
               </Button>
             )}

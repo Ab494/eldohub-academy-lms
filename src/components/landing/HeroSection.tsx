@@ -124,7 +124,7 @@ const HeroSection: React.FC = () => {
 
                   <div className="flex items-center justify-between pt-1">
                     <div className="flex items-center gap-1">
-                      <span className="text-2xl font-extrabold text-card-foreground">₦25,000</span>
+                      <span className="text-2xl font-extrabold text-card-foreground">KSh 25,000</span>
                     </div>
                     <Button variant="hero" size="sm">
                       <TrendingUp className="w-4 h-4 mr-1" />

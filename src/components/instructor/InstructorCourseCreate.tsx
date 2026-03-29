@@ -280,7 +280,7 @@ const InstructorCourseCreate: React.FC = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="price">Price (USD)</Label>
+              <Label htmlFor="price">Price (KSh)</Label>
               <Input
                 id="price"
                 type="number"

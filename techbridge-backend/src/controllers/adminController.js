@@ -121,7 +121,7 @@ export const getRevenueStats = asyncHandler(async (req, res) => {
     data: {
       total: totalRevenue,
       monthly: monthlyRevenue,
-      currency: 'USD'
+      currency: 'KSh'
     }
   });
 });
@@ -235,7 +235,7 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     revenue: {
       total: paidEnrollments * averagePrice,
       monthly: monthlyEnrollments * averagePrice,
-      currency: 'USD'
+      currency: 'KSh'
     }
   };
 

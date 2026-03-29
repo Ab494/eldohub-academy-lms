@@ -185,7 +185,7 @@ const CourseDetail: React.FC = () => {
               {/* Price */}
               <div className="text-center">
                 {course.price && course.price > 0 ? (
-                  <span className="text-3xl font-extrabold text-foreground">₦{course.price.toLocaleString()}</span>
+                  <span className="text-3xl font-extrabold text-foreground">KSh {course.price.toLocaleString()}</span>
                 ) : (
                   <span className="text-3xl font-extrabold text-accent">Free</span>
                 )}

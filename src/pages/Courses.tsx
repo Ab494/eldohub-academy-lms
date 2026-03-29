@@ -230,12 +230,12 @@ const Courses: React.FC = () => {
             <BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-foreground mb-2">No courses found</h3>
             <p className="text-muted-foreground mb-6">
-              {searchTerm || categoryFilter !== 'all' || levelFilter !== 'all'
+              {searchTerm || categoryFilter !== 'all' || levelFilter !== 'all' || priceFilter !== 'all'
                 ? 'Try adjusting your search or filters'
                 : 'No courses are available at the moment'}
             </p>
-            {(searchTerm || categoryFilter !== 'all' || levelFilter !== 'all') && (
-              <Button variant="outline" onClick={() => { setSearchTerm(''); setCategoryFilter('all'); setLevelFilter('all'); }}>
+            {(searchTerm || categoryFilter !== 'all' || levelFilter !== 'all' || priceFilter !== 'all') && (
+              <Button variant="outline" onClick={() => { setSearchTerm(''); setCategoryFilter('all'); setLevelFilter('all'); setPriceFilter('all'); }}>
                 Clear Filters
               </Button>
             )}

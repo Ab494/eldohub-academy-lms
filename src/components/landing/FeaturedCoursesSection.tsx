@@ -161,7 +161,7 @@ const FeaturedCoursesSection: React.FC = () => {
 
                   <div className="flex items-center justify-between pt-2 border-t border-border">
                     <span className="text-xl font-extrabold text-card-foreground">
-                      {course.price > 0 ? `₦${course.price.toLocaleString()}` : 'Free'}
+                      {course.price > 0 ? `KSh ${course.price.toLocaleString()}` : 'Free'}
                     </span>
                     <Button variant="hero" size="sm" asChild>
                       <Link to={`/courses/${course._id}`}>Enroll Now</Link>

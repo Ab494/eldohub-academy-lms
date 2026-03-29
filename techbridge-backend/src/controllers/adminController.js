@@ -235,7 +235,7 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     revenue: {
       total: paidEnrollments * averagePrice,
       monthly: monthlyEnrollments * averagePrice,
-      currency: 'USD'
+      currency: 'KSh'
     }
   };
 

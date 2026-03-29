@@ -109,7 +109,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           <div className="absolute bottom-3 right-3">
             {course.price && course.price > 0 ? (
               <Badge className="bg-card/90 text-card-foreground backdrop-blur-sm text-sm font-extrabold border-0 px-2.5 py-1">
-                ₦{course.price.toLocaleString()}
+                KSh {course.price.toLocaleString()}
               </Badge>
             ) : (
               <Badge className="bg-accent/90 text-accent-foreground text-sm font-bold border-0 px-2.5 py-1">

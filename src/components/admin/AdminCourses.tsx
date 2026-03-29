@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { courseAPI, adminAPI } from '@/lib/apiClient';
+import { stripHtml } from '@/lib/textUtils';
 
 interface Course {
   _id: string;

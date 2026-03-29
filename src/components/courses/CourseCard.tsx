@@ -131,7 +131,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           </h3>
 
           <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-            {course.description}
+            {stripHtml(course.description)}
           </p>
 
           <p className="text-sm text-muted-foreground mb-3">

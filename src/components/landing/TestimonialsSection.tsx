@@ -4,23 +4,23 @@ import { motion } from 'framer-motion';
 
 const testimonials = [
   {
-    name: 'Chioma Eze',
+    name: 'Wanjiku Kamau',
     role: 'Frontend Developer',
-    initials: 'CE',
+    initials: 'WK',
     quote: 'TechBridge helped me land my first developer role in just 4 months. The project-based curriculum is unmatched.',
     rating: 5,
   },
   {
-    name: 'Samuel Adeyemi',
+    name: 'Brian Ochieng',
     role: 'Data Analyst',
-    initials: 'SA',
+    initials: 'BO',
     quote: 'The instructors are genuinely invested in your success. I went from zero coding to analyzing real datasets.',
     rating: 5,
   },
   {
-    name: 'Fatima Bello',
+    name: 'Amina Wafula',
     role: 'Full-Stack Engineer',
-    initials: 'FB',
+    initials: 'AW',
     quote: 'Flexible pace, supportive community, and industry-relevant skills. Best learning investment I\'ve made.',
     rating: 5,
   },

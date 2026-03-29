@@ -105,7 +105,10 @@ const Courses: React.FC = () => {
       course.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === 'all' || course.category === categoryFilter;
     const matchesLevel = levelFilter === 'all' || course.level.toLowerCase() === levelFilter.toLowerCase();
-    return matchesSearch && matchesCategory && matchesLevel;
+    const matchesPrice = priceFilter === 'all' ||
+      (priceFilter === 'free' && (!course.price || course.price === 0)) ||
+      (priceFilter === 'paid' && course.price && course.price > 0);
+    return matchesSearch && matchesCategory && matchesLevel && matchesPrice;
   });
 
   const categories = [...new Set(courses.map(c => c.category))];

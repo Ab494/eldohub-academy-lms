@@ -214,10 +214,23 @@ const AdminCourses: React.FC = () => {
               courses.map((course) => (
                 <TableRow key={course._id}>
                   <TableCell>
-                    <div>
-                      <div className="font-medium text-foreground">{course.title}</div>
-                      <div className="text-sm text-muted-foreground line-clamp-1">
-                        {course.description}
+                    <div className="flex items-center gap-3">
+                      {course.thumbnail ? (
+                        <img
+                          src={course.thumbnail}
+                          alt={course.title}
+                          className="w-12 h-8 rounded object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-12 h-8 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <BookOpen className="w-4 h-4 text-primary" />
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <div className="font-medium text-foreground truncate">{course.title}</div>
+                        <div className="text-sm text-muted-foreground line-clamp-1">
+                          {stripHtml(course.description)}
+                        </div>
                       </div>
                     </div>
                   </TableCell>

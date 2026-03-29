@@ -38,6 +38,7 @@ interface Course {
   level: string;
   status: 'draft' | 'published';
   enrollmentCount: number;
+  thumbnail?: string | null;
   instructor: {
     firstName: string;
     lastName: string;

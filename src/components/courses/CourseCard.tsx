@@ -200,7 +200,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 export const ComingSoonCard: React.FC = () => (
   <div className="rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center p-8 text-center min-h-[320px]">
     <Rocket className="w-10 h-10 text-muted-foreground mb-3" />
-    <h3 className="text-lg font-semibold text-muted-foreground mb-1">More Courses Coming Soon</h3>
+    <h3 className="text-lg font-semibold text-muted-foreground mb-1">More Courses Coming Soon. Check back later</h3>
     <p className="text-sm text-muted-foreground">We're working on new content. Stay tuned!</p>
   </div>
 );

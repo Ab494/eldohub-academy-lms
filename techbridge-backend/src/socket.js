@@ -1,3 +1,4 @@
+import { isAllowedOrigin } from './utils/cors.js';
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { config } from './config/index.js';
@@ -33,7 +34,7 @@ export function initSocket(httpServer) {
   
   io = new Server(httpServer, {
     cors: {
-      origin: corsOrigins,
+      origin: (origin, cb) => cb(null, isAllowedOrigin(origin)),
       credentials: true,
       methods: ['GET', 'POST'],
     },

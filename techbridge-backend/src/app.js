@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { errorHandler } from './utils/errorHandler.js';
 import { config } from './config/index.js';
+import { isAllowedOrigin } from './utils/cors.js';
 
 // Create uploads directories if they don't exist
 const uploadsDir = path.join(process.cwd(), 'uploads');
@@ -43,20 +44,8 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // CORS - Allow both 8080 and 5173 for dev, plus config.frontendUrl
 const corsOptions = {
   origin: (origin, callback) => {
-    const allowedOrigins = [
-      'http://localhost:8080',
-      'http://localhost:5173',
-      'http://127.0.0.1:8080',
-      'http://127.0.0.1:5173',
-      config.frontendUrl,
-    ];
-    
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`CORS blocked origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
+    if (!isAllowedOrigin(origin)) console.warn(`CORS blocked origin: ${origin}`);
+    callback(null, isAllowedOrigin(origin));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
